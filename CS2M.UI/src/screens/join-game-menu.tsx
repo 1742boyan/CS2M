@@ -17,6 +17,7 @@ export const downloadDone = bindValue<number>(mod.id, 'DownloadDone', 0);
 export const downloadRemaining = bindValue<number>(mod.id, 'DownloadRemaining', 0);
 export const downloadSpeed = bindValue<number>(mod.id, 'DownloadSpeed', 0);
 export const joinErrorMessage = bindValue<Array<string>>(mod.id, 'JoinErrorMessage', []);
+export const isSteamMode = bindValue<boolean>(mod.id, 'IsSteamMode', false);
 
 export function hideJoinGame() {
     trigger(mod.id, "HideJoinGameMenu");
@@ -24,6 +25,10 @@ export function hideJoinGame() {
 
 export function setIntVal(name: string, value: any) {
     trigger(mod.id, name, parseInt(value));
+}
+
+export function setBoolVal(name: string, value: boolean) {
+    trigger(mod.id, name, value);
 }
 
 export function joinGame() {
@@ -38,6 +43,7 @@ export const JoinGameSettings = () => {
     const usernameValue = useValue(username);
     const status = useValue(playerStatus);
     const errMsg = useValue(joinErrorMessage);
+    const isSteamModeValue = useValue(isSteamMode);
 
     const enabled = status == "INACTIVE";
 
@@ -94,14 +100,28 @@ export const JoinGameSettings = () => {
                 <div className={GameOptionsCSS.optionsColumn}>
                     <NavigationScope focused={null} onChange={() => {
                     }}>
-                        <InputField label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
-                                    onChange={(val: any) => {
-                                        setVal("SetJoinIpAddress", val)
-                                    }}></InputField>
-                        <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
-                                    onChange={(val: any) => {
-                                        setIntVal("SetJoinPort", val)
-                                    }}></InputField>
+                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
+                            <span style={{color: "white"}}>Join Mode:</span>
+                            <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer"}}>
+                                {isSteamModeValue ? "Steam P2P" : "Direct IP"}
+                            </button>
+                        </div>
+                        {isSteamModeValue ? (
+                            <div style={{padding: "10px", marginBottom: "10px", backgroundColor: "rgba(0,0,0,0.5)", color: "white"}}>
+                                To join via Steam, wait for an invite and accept it in the Steam Overlay (Shift+Tab).
+                            </div>
+                        ) : (
+                            <>
+                                <InputField label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
+                                            onChange={(val: any) => {
+                                                setVal("SetJoinIpAddress", val)
+                                            }}></InputField>
+                                <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                                            onChange={(val: any) => {
+                                                setIntVal("SetJoinPort", val)
+                                            }}></InputField>
+                            </>
+                        )}
                         <InputField label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
                                     onChange={(val: any) => {
                                         setVal("SetUsername", val)

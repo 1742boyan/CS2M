@@ -34,6 +34,7 @@ namespace CS2M.UI
         private ValueBinding<string> _playerStatus;
 
         private ValueBinding<string> _username;
+        private ValueBinding<bool> _isSteamMode;
 
         private readonly Stopwatch _downloadTimer = new();
         private int _lastDownloadDone = 0;
@@ -65,6 +66,7 @@ namespace CS2M.UI
             AddBinding(new TriggerBinding<int>(Mod.Name, "SetHostPort", port => { _hostPort.Update(port); }));
             AddBinding(new TriggerBinding<string>(Mod.Name, "SetUsername",
                 username => { _username.Update(username); }));
+            AddBinding(new TriggerBinding<bool>(Mod.Name, "SetIsSteamMode", isSteam => { _isSteamMode.Update(isSteam); }));
 
             AddBinding(new TriggerBinding(Mod.Name, "JoinGame", JoinGame));
             AddBinding(new TriggerBinding(Mod.Name, "HostGame", HostGame));
@@ -79,6 +81,7 @@ namespace CS2M.UI
             AddBinding(_joinPort = new ValueBinding<int>(Mod.Name, "JoinPort", 0));
             AddBinding(_hostPort = new ValueBinding<int>(Mod.Name, "HostPort", 0));
             AddBinding(_username = new ValueBinding<string>(Mod.Name, "Username", ""));
+            AddBinding(_isSteamMode = new ValueBinding<bool>(Mod.Name, "IsSteamMode", false));
 
             AddBinding(_playerStatus = new ValueBinding<string>(Mod.Name, "PlayerStatus", "INACTIVE"));
             AddBinding(_downloadDone = new ValueBinding<int>(Mod.Name, "DownloadDone", 0));
@@ -136,12 +139,14 @@ namespace CS2M.UI
 
         private void JoinGame()
         {
+            NetworkManager.IsSteamMode = _isSteamMode.value;
             NetworkInterface.Instance.UpdateLocalPlayerUsername(_username.value);
             NetworkInterface.Instance.Connect(new ConnectionConfig(_joinIPAddress.value, _joinPort.value, ""));
         }
 
         private void HostGame()
         {
+            NetworkManager.IsSteamMode = _isSteamMode.value;
             NetworkInterface.Instance.UpdateLocalPlayerUsername(_username.value);
             NetworkInterface.Instance.StartServer(new ConnectionConfig(_hostPort.value));
         }

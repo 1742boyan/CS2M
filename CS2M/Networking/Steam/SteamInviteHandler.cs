@@ -33,13 +33,7 @@ namespace CS2M.Networking.Steam
             UI.UISystem uiSystem = Unity.Entities.World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<UI.UISystem>();
             
             // Wait, we need to trigger the NetworkManager to connect to this friend.
-            ConnectionConfig config = new ConnectionConfig
-            {
-                Token = friendId.m_SteamID.ToString(),
-                HostAddress = "",
-                Port = 0,
-                Password = ""
-            };
+            ConnectionConfig config = new ConnectionConfig(friendId.m_SteamID.ToString());
 
             // Switch to Steam mode implicitly
             NetworkManager.IsSteamMode = true;

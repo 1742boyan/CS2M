@@ -12,12 +12,18 @@ export const port = bindValue<number>(mod.id, 'HostPort', 0);
 export const username = bindValue<string>(mod.id, 'Username', '');
 export const playerStatus = bindValue<string>(mod.id, 'PlayerStatus', 'INACTIVE');
 
+export const isSteamMode = bindValue<boolean>(mod.id, 'IsSteamMode', false);
+
 export function hideHostGame() {
     trigger(mod.id, "HideHostGameMenu");
 }
 
 export function setIntVal(name: string, value: any) {
     trigger(mod.id, name, parseInt(value));
+}
+
+export function setBoolVal(name: string, value: boolean) {
+    trigger(mod.id, name, value);
 }
 
 export function hostGame() {
@@ -34,6 +40,7 @@ export const HostGameSettings = () => {
     let portValue = useValue(port);
     let usernameValue = useValue(username);
     const status = useValue(playerStatus);
+    const isSteamModeValue = useValue(isSteamMode) || false;
 
     const enabled = status == "INACTIVE";
 
@@ -45,10 +52,22 @@ export const HostGameSettings = () => {
                 <div className={GameOptionsCSS.optionsColumn}>
                     <NavigationScope focused={null} onChange={() => {
                     }}>
-                        <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
-                                    onChange={(val: any) => {
-                                        setIntVal("SetHostPort", val)
-                                    }}></InputField>
+                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
+                            <span style={{color: "white"}}>Hosting Mode:</span>
+                            <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer"}}>
+                                {isSteamModeValue ? "Steam P2P" : "Direct IP"}
+                            </button>
+                        </div>
+                        {isSteamModeValue ? (
+                            <div style={{padding: "10px", marginBottom: "10px", backgroundColor: "rgba(0,0,0,0.5)", color: "white"}}>
+                                Host via Steam. Use the Steam Overlay (Shift+Tab) to invite friends.
+                            </div>
+                        ) : (
+                            <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                                        onChange={(val: any) => {
+                                            setIntVal("SetHostPort", val)
+                                        }}></InputField>
+                        )}
                         <InputField label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
                                     onChange={(val: any) => {
                                         setVal("SetUsername", val)
