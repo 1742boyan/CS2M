@@ -25,6 +25,12 @@
         <Reference Include="Colossal.Core">
             <Private>false</Private>
         </Reference>
+        <Reference Include="Colossal.PSI.Steamworks">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="com.rlabrecque.steamworks.net">
+            <Private>false</Private>
+        </Reference>
         <Reference Include="Colossal.Logging">
             <Private>false</Private>
         </Reference>
