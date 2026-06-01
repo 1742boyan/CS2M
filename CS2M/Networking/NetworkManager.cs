@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using CS2M.Commands.Data.Internal;
 using CS2M.Commands.Handler.Internal;
 using CS2M.Networking.Transport;
+using CS2M.Networking.Chirper;
 
 namespace CS2M.Networking
 {
@@ -123,10 +124,12 @@ namespace CS2M.Networking
             Log.Trace($"NetworkManager: OnPeerConnectedEvent [PeerId: {peer.Id}]");
             if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.CLIENT)
             {
+                MultiplayerChirpSystem.Instance?.CreateCustomChirp("Successfully connected to server.");
                 ClientConnectSuccessfulEvent?.Invoke();
             }
             else if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
+                MultiplayerChirpSystem.Instance?.CreateCustomChirp("A player joined the game.");
                 // TODO: timeout logic for new connections
             }
         }
@@ -136,10 +139,12 @@ namespace CS2M.Networking
             Log.Trace($"NetworkManager: OnPeerDisconnectedEvent [PeerId: {peer.Id}]");
             if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.CLIENT)
             {
+                MultiplayerChirpSystem.Instance?.CreateCustomChirp("Disconnected from server.");
                 ClientDisconnectEvent?.Invoke();
             }
             else if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
+                MultiplayerChirpSystem.Instance?.CreateCustomChirp("A player disconnected.");
                 if (peer.NativePeer is NetPeer netPeer)
                 {
                     NetworkInterface.Instance.GetPlayerByPeer(netPeer)?.HandleDisconnect();
@@ -150,6 +155,7 @@ namespace CS2M.Networking
         private void ListenerOnNetworkErrorEvent(string source, SocketError socketError)
         {
             Log.Error($"Received an error from {source}. Code: {socketError}");
+            MultiplayerChirpSystem.Instance?.CreateCustomChirp($"Network error: {socketError}");
         }
 
         public void ProcessEvents()
@@ -181,6 +187,7 @@ namespace CS2M.Networking
 
         public bool StartServer(ConnectionConfig connectionConfig)
         {
+            MultiplayerChirpSystem.Instance?.CreateCustomChirp("Multiplayer session started.");
             _connectionConfig = connectionConfig;
             
             if (IsSteamMode)
