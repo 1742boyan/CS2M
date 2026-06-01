@@ -27,6 +27,8 @@ namespace CS2M.Networking
         public event OnClientConnectFailed ClientConnectFailedEvent;
         public event OnClientDisconnect ClientDisconnectEvent;
 
+        public static bool IsSteamMode { get; set; } = false;
+
         public NetworkManager()
         {
         }
@@ -36,9 +38,14 @@ namespace CS2M.Networking
             Log.Trace("NetworkManager: InitConnect");
             _connectionConfig = connectionConfig;
 
-            // TODO: In the future, check connectionConfig if we want Steam or IP
-            // For now, default to LiteNetLib
-            _transport = new LiteNetLibTransport();
+            if (IsSteamMode)
+            {
+                _transport = new SteamworksTransport();
+            }
+            else
+            {
+                _transport = new LiteNetLibTransport();
+            }
             
             RegisterTransportEvents();
 
@@ -176,8 +183,16 @@ namespace CS2M.Networking
         {
             _connectionConfig = connectionConfig;
             
-            // For now, default to LiteNetLib
-            _transport = new LiteNetLibTransport();
+            if (IsSteamMode)
+            {
+                _transport = new SteamworksTransport();
+                Steam.SteamInviteHandler.Instance.SetRichPresence();
+            }
+            else
+            {
+                _transport = new LiteNetLibTransport();
+            }
+            
             RegisterTransportEvents();
 
             if (_transport is LiteNetLibTransport lnlTransport)
@@ -192,6 +207,10 @@ namespace CS2M.Networking
         {
             _transport?.Stop();
             _transport = null;
+            if (IsSteamMode)
+            {
+                Steam.SteamInviteHandler.Instance.ClearRichPresence();
+            }
         }
     }
 }
