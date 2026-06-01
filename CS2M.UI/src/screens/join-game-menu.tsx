@@ -93,6 +93,7 @@ export const JoinGameSettings = () => {
     }
 
     return (
+        <FocusBoundary>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
                         <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
@@ -126,6 +127,7 @@ export const JoinGameSettings = () => {
                     {messages}
                 </div>
             </div>
+        </FocusBoundary>
     );
 }
 

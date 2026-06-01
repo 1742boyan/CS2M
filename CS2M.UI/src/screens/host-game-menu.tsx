@@ -45,6 +45,7 @@ export const HostGameSettings = () => {
     const enabled = status == "INACTIVE";
 
     return (
+        <FocusBoundary>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
                         <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
@@ -72,6 +73,7 @@ export const HostGameSettings = () => {
 
                 </div>
             </div>
+        </FocusBoundary>
     );
 }
 
