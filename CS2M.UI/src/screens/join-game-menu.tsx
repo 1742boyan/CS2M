@@ -6,17 +6,17 @@ import {LocalizedNumber, LocalizedPercentage, LocalizedString, Unit, useLocaliza
 import {InputField} from "../util/input-field";
 import {setVal} from "api";
 
-export const joinMenuVisible = bindValue<boolean>(mod.id, 'JoinMenuVisible');
-export const modSupport = bindValue<Array<any>>(mod.id, 'modSupport');
+export const joinMenuVisible = bindValue<boolean>(mod.id, 'JoinMenuVisible', false);
+export const modSupport = bindValue<Array<any>>(mod.id, 'modSupport', []);
 
-export const ipAddress = bindValue<string>(mod.id, 'JoinIpAddress');
-export const port = bindValue<number>(mod.id, 'JoinPort');
-export const username = bindValue<string>(mod.id, 'Username');
-export const playerStatus = bindValue<string>(mod.id, 'PlayerStatus');
-export const downloadDone = bindValue<number>(mod.id, 'DownloadDone');
-export const downloadRemaining = bindValue<number>(mod.id, 'DownloadRemaining');
-export const downloadSpeed = bindValue<number>(mod.id, 'DownloadSpeed');
-export const joinErrorMessage = bindValue<Array<string>>(mod.id, 'JoinErrorMessage');
+export const ipAddress = bindValue<string>(mod.id, 'JoinIpAddress', '');
+export const port = bindValue<number>(mod.id, 'JoinPort', 0);
+export const username = bindValue<string>(mod.id, 'Username', '');
+export const playerStatus = bindValue<string>(mod.id, 'PlayerStatus', 'INACTIVE');
+export const downloadDone = bindValue<number>(mod.id, 'DownloadDone', 0);
+export const downloadRemaining = bindValue<number>(mod.id, 'DownloadRemaining', 0);
+export const downloadSpeed = bindValue<number>(mod.id, 'DownloadSpeed', 0);
+export const joinErrorMessage = bindValue<Array<string>>(mod.id, 'JoinErrorMessage', []);
 
 export function hideJoinGame() {
     trigger(mod.id, "HideJoinGameMenu");

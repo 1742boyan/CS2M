@@ -7,6 +7,7 @@ using CS2M.API.Networking;
 using CS2M.Mods;
 using CS2M.Networking;
 using Game;
+using Game.SceneFlow;
 using Game.UI;
 using Game.UI.InGame;
 
@@ -105,13 +106,14 @@ namespace CS2M.UI
 
         private void ShowMultiplayerMenu()
         {
+            Log.Info($"ShowMultiplayerMenu triggered. GameMode: {GameManager.instance.gameMode}");
             RefreshModSupport();
-            if (_gameMode == GameMode.MainMenu)
+            if (GameManager.instance.gameMode == GameMode.MainMenu)
             {
                 _activeMenuScreenBinding.Update(99);
                 _joinMenuVisible.Update(true);
             }
-            else if (_gameMode == GameMode.Game)
+            else if (GameManager.instance.gameMode == GameMode.Game)
             {
                 _activeGameScreenBinding.Update((GameScreenUISystem.GameScreen)99);
                 _hostMenuVisible.Update(true);

@@ -6,11 +6,11 @@ import {useLocalization} from "cs2/l10n";
 import {InputField} from "../util/input-field";
 import {setVal} from "../api";
 
-export const hostMenuVisible = bindValue<boolean>(mod.id, 'HostMenuVisible');
-export const modSupport = bindValue<Array<any>>(mod.id, 'modSupport');
-export const port = bindValue<number>(mod.id, 'HostPort');
-export const username = bindValue<string>(mod.id, 'Username');
-export const playerStatus = bindValue<string>(mod.id, 'PlayerStatus');
+export const hostMenuVisible = bindValue<boolean>(mod.id, 'HostMenuVisible', false);
+export const modSupport = bindValue<Array<any>>(mod.id, 'modSupport', []);
+export const port = bindValue<number>(mod.id, 'HostPort', 0);
+export const username = bindValue<string>(mod.id, 'Username', '');
+export const playerStatus = bindValue<string>(mod.id, 'PlayerStatus', 'INACTIVE');
 
 export function hideHostGame() {
     trigger(mod.id, "HideHostGameMenu");

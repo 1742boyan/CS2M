@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
@@ -111,18 +111,10 @@
         <PackAssemblies Include="$(OutputPath)\System.Numerics.Vectors.dll"/>
         <PackAssemblies Include="$(OutputPath)\System.Runtime.CompilerServices.Unsafe.dll"/>
         <PackAssemblies Include="$(OutputPath)\System.Threading.Tasks.Extensions.dll"/>
-        <PackAssemblies Include="$(OutputPath)\System.Reflection.Emit.dll"/>
-        <PackAssemblies Include="$(OutputPath)\System.Reflection.Emit.Lightweight.dll"/>
-        <PackAssemblies Include="$(OutputPath)\System.Reflection.Emit.ILGeneration.dll"/>
         <PackAssemblies Include="$(OutputPath)\0Harmony.dll"/>
     </ItemGroup>
 
-    <Target Name="CopyEmits" AfterTargets="Build">
-        <ItemGroup>
-            <AdditionalAssemblies Include="$(ProjectDir)/../assemblies/*.dll"/>
-        </ItemGroup>
-        <Copy SourceFiles="@(AdditionalAssemblies)" DestinationFolder="$(OutDir)"/>
-    </Target>
+
 
     <!-- ILRepack -->
     <Target Name="ILRepacker" AfterTargets="Build">

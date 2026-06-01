@@ -15,7 +15,7 @@ export const MenuUIExtensions : ModuleRegistryExtend = (Component) => {
     return (props) => {
         const {children, ...otherProps} = props || {};
         let menus;
-        if (children && children.length == 5) {
+        if (Array.isArray(children) && children.length >= 3) {
             menus = 
                 <>
                     <JoinGameMenu></JoinGameMenu>
@@ -40,7 +40,7 @@ export const PauseMenuCSMExtend : ModuleRegistryExtend = (Component) => {
         if (props.src == 'Media/Glyphs/ArrowRight.svg') {
             return (
                 <>
-                    <MenuButton onClick={showMultiplayerMenu}>Multiplayer</MenuButton>
+                    <MenuButton onSelect={showMultiplayerMenu}>Multiplayer</MenuButton>
                     <Component {...otherProps}>
                         {children}
                     </Component>
