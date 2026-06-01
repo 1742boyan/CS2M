@@ -148,4 +148,19 @@
         <Exec Command="npm run build" WorkingDirectory="$(ProjectDir)/../CS2M.UI"/>
     </Target>
 
+    <Target Name="PackageForGitHub" AfterTargets="BuildUI" Condition="'$(Configuration)' == 'Debug'">
+        <PropertyGroup>
+            <ReleaseDir>$(ProjectDir)..\Releases</ReleaseDir>
+            <ZipName>CS2M_$(Version).zip</ZipName>
+        </PropertyGroup>
+
+        <Message Text="Packaging GitHub Release..." Importance="high" />
+
+        <MakeDir Directories="$(ReleaseDir)" />
+
+        <Exec Command="powershell -Command &quot;Compress-Archive -Path '$(DeployDir)' -DestinationPath '$(ReleaseDir)\$(ZipName)' -Force&quot;" />
+
+        <Message Text="Release successfully zipped to: $(ReleaseDir)\$(ZipName)" Importance="high" />
+    </Target>
+
 </Project>

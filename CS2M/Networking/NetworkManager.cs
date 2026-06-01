@@ -212,6 +212,7 @@ namespace CS2M.Networking
 
         public void Stop()
         {
+            MultiplayerChirpSystem.Instance?.CreateCustomChirp("Multiplayer session stopped.");
             _transport?.Stop();
             _transport = null;
             if (IsSteamMode)
