@@ -47,7 +47,7 @@ namespace CS2M.Networking
             {
                 _transport = new LiteNetLibTransport();
             }
-            
+
             RegisterTransportEvents();
 
             if (_transport is LiteNetLibTransport lnlTransport)
@@ -65,7 +65,7 @@ namespace CS2M.Networking
             _transport.ClientConnectSuccessfulEvent += () => { return ClientConnectSuccessfulEvent?.Invoke() ?? false; };
             _transport.ClientConnectFailedEvent += () => { return ClientConnectFailedEvent?.Invoke() ?? false; };
             _transport.ClientDisconnectEvent += () => { return ClientDisconnectEvent?.Invoke() ?? false; };
-            
+
             _transport.NetworkReceiveEvent += ListenerOnNetworkReceiveEvent;
             _transport.NetworkErrorEvent += ListenerOnNetworkErrorEvent;
             _transport.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
@@ -91,7 +91,7 @@ namespace CS2M.Networking
         {
             CommandHandler handler = CommandInternal.Instance.GetCommandHandler(command.GetType());
             Log.Trace($"NetworkManager: OnNetworkReceiveEvent [PeerId: {peer.Id}] {command.GetType()}");
-            
+
             if (command is PreconditionsCheckCommand preconditionsCheckCommand)
             {
                 if (peer.NativePeer is NetPeer netPeer)
@@ -109,7 +109,7 @@ namespace CS2M.Networking
                 {
                     isConnected = NetworkInterface.Instance.IsPeerConnected(netPeer);
                 }
-                
+
                 if (!isConnected)
                 {
                     return;
@@ -189,7 +189,7 @@ namespace CS2M.Networking
         {
             MultiplayerChirpSystem.Instance?.CreateCustomChirp("Multiplayer session started.");
             _connectionConfig = connectionConfig;
-            
+
             if (IsSteamMode)
             {
                 _transport = new SteamworksTransport();
@@ -199,7 +199,7 @@ namespace CS2M.Networking
             {
                 _transport = new LiteNetLibTransport();
             }
-            
+
             RegisterTransportEvents();
 
             if (_transport is LiteNetLibTransport lnlTransport)
