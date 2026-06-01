@@ -45,7 +45,7 @@ export const HostGameSettings = () => {
     const enabled = status == "INACTIVE";
 
     return (
-        <FocusBoundary>
+        <>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
                         <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
@@ -64,16 +64,16 @@ export const HostGameSettings = () => {
                                             setIntVal("SetHostPort", val)
                                         }}></InputField>
                         )}
-                        <InputField key="username" label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
-                                    onChange={(val: any) => {
-                                        setVal("SetUsername", val)
-                                    }}></InputField>
+                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px", padding: "10px", backgroundColor: "rgba(0,0,0,0.3)"}}>
+                            <span style={{color: "white"}}>Username (from Options):</span>
+                            <span style={{color: "white", fontWeight: "bold"}}>{usernameValue}</span>
+                        </div>
                 </div>
                 <div className={GameOptionsCSS.infoColumn}>
 
                 </div>
             </div>
-        </FocusBoundary>
+        </>
     );
 }
 

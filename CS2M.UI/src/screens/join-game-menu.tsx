@@ -93,41 +93,27 @@ export const JoinGameSettings = () => {
     }
 
     return (
-        <FocusBoundary>
+        <>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
-                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
-                            <span style={{color: "white"}}>Join Mode:</span>
-                            <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer"}}>
-                                {isSteamModeValue ? "Steam P2P" : "Direct IP"}
-                            </button>
+                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px", padding: "10px", backgroundColor: "rgba(0,0,0,0.3)"}}>
+                            <span style={{color: "white"}}>Username (from Options):</span>
+                            <span style={{color: "white", fontWeight: "bold"}}>{usernameValue}</span>
                         </div>
-                        {isSteamModeValue ? (
-                            <div style={{padding: "10px", marginBottom: "10px", backgroundColor: "rgba(0,0,0,0.5)", color: "white"}}>
-                                To join via Steam, wait for an invite and accept it in the Steam Overlay (Shift+Tab).
-                            </div>
-                        ) : (
-                            <>
-                                <InputField key="ipaddress" label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
-                                            onChange={(val: any) => {
-                                                setVal("SetJoinIpAddress", val)
-                                            }}></InputField>
-                                <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
-                                            onChange={(val: any) => {
-                                                setIntVal("SetJoinPort", val)
-                                            }}></InputField>
-                            </>
-                        )}
-                        <InputField key="username" label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
+                        <InputField key="ipaddress" label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
                                     onChange={(val: any) => {
-                                        setVal("SetUsername", val)
+                                        setVal("SetJoinIpAddress", val)
+                                    }}></InputField>
+                        <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                                    onChange={(val: any) => {
+                                        setIntVal("SetJoinPort", val)
                                     }}></InputField>
                 </div>
                 <div className={GameOptionsCSS.infoColumn}>
                     {messages}
                 </div>
             </div>
-        </FocusBoundary>
+        </>
     );
 }
 

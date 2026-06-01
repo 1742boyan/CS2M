@@ -39,6 +39,8 @@ namespace CS2M.UI
         private readonly Stopwatch _downloadTimer = new();
         private int _lastDownloadDone = 0;
 
+        public static UISystem Instance { get; private set; }
+
         private ChatPanel ChatPanel { get; } = new();
 
         protected override void OnStartRunning()
@@ -56,6 +58,7 @@ namespace CS2M.UI
         protected override void OnCreate()
         {
             base.OnCreate();
+            Instance = this;
 
             AddBinding(new TriggerBinding(Mod.Name, "ShowMultiplayerMenu", ShowMultiplayerMenu));
             AddBinding(new TriggerBinding(Mod.Name, "HideJoinGameMenu", HideJoinGameMenu));
@@ -80,7 +83,7 @@ namespace CS2M.UI
             AddBinding(_joinIPAddress = new ValueBinding<string>(Mod.Name, "JoinIpAddress", ""));
             AddBinding(_joinPort = new ValueBinding<int>(Mod.Name, "JoinPort", 0));
             AddBinding(_hostPort = new ValueBinding<int>(Mod.Name, "HostPort", 0));
-            AddBinding(_username = new ValueBinding<string>(Mod.Name, "Username", ""));
+            AddBinding(_username = new ValueBinding<string>(Mod.Name, "Username", Mod.Instance.Settings.Username ?? ""));
             AddBinding(_isSteamMode = new ValueBinding<bool>(Mod.Name, "IsSteamMode", false));
 
             AddBinding(_playerStatus = new ValueBinding<string>(Mod.Name, "PlayerStatus", "INACTIVE"));
@@ -195,6 +198,11 @@ namespace CS2M.UI
         public void SetJoinErrors(params string[] errorMessageKey)
         {
             _joinErrorMessage.Update(errorMessageKey.ToList());
+        }
+
+        public void SetUsername(string username)
+        {
+            _username?.Update(username);
         }
     }
 }

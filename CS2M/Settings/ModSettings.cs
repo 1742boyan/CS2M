@@ -23,6 +23,10 @@ namespace CS2M.Settings
         [SettingsUISetter(typeof(ModSettings), nameof(OnSetLoggingLevel))]
         public int LoggingLevel { get; set; }
 
+        [SettingsUISection(Section, GeneralSettings)]
+        [SettingsUITextInput]
+        public string Username { get; set; }
+
         [SettingsUISection(Section, AdvancedSettings)]
         [SettingsUITextInput]
         public string ApiServer { get; set; }
@@ -39,6 +43,7 @@ namespace CS2M.Settings
         public sealed override void SetDefaults()
         {
             LoggingLevel = Level.Info.severity;
+            Username = "Player" + new System.Random().Next(1000, 9999);
             ApiServer = "api.citiesskylinesmultiplayer.com";
             ApiServerPort = "4242";
         }
