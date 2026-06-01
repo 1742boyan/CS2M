@@ -44,14 +44,9 @@ export const HostGameSettings = () => {
 
     const enabled = status == "INACTIVE";
 
-    const focusChange = () => {
-    };
     return (
-        <FocusBoundary onFocusChange={focusChange}>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
-                    <NavigationScope focused={null} onChange={() => {
-                    }}>
                         <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
                             <span style={{color: "white"}}>Hosting Mode:</span>
                             <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer"}}>
@@ -72,13 +67,11 @@ export const HostGameSettings = () => {
                                     onChange={(val: any) => {
                                         setVal("SetUsername", val)
                                     }}></InputField>
-                    </NavigationScope>
                 </div>
                 <div className={GameOptionsCSS.infoColumn}>
 
                 </div>
             </div>
-        </FocusBoundary>
     );
 }
 
