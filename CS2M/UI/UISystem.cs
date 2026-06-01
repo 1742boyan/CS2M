@@ -55,6 +55,18 @@ namespace CS2M.UI
             ChatPanel.WelcomeChatMessage();
         }
 
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+
+            if (_activeMenuScreenBinding != null && _activeMenuScreenBinding.value != 99 && 
+                _activeGameScreenBinding != null && (int)_activeGameScreenBinding.value != 99)
+            {
+                if (_joinMenuVisible.value) _joinMenuVisible.Update(false);
+                if (_hostMenuVisible.value) _hostMenuVisible.Update(false);
+            }
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();

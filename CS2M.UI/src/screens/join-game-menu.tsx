@@ -3,6 +3,7 @@ import {bindValue, trigger, useValue} from "cs2/api";
 import mod from "../../mod.json";
 import {FocusBoundary, NavigationScope} from "cs2/input";
 import {LocalizedNumber, LocalizedPercentage, LocalizedString, Unit, useLocalization} from "cs2/l10n";
+import {Scrollable} from "cs2/ui";
 import {InputField} from "../util/input-field";
 import {setVal} from "api";
 
@@ -220,21 +221,19 @@ export const JoinGameMenu = () => {
     if (visible) {
         content = (
             <SubScreen title={<LocalizedString id={"CS2M.UI.Multiplayer"}/>} onClose={hideJoinGame}>
-                <InputActionConsumer actions={actions}>
-                    <div className={LoadGameScreenCSS.content}>
-                            <div className={LoadGameScreenCSS.stepContainer}>
-                                <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
-                                    <div className={DetailSectionCSS.title}>
-                                        <LocalizedString id={"CS2M.UI.JoinGame"}/>
-                                    </div>
-                                    <JoinGameSettings></JoinGameSettings>
+                <div className={LoadGameScreenCSS.content}>
+                        <div className={LoadGameScreenCSS.stepContainer}>
+                            <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
+                                <div className={DetailSectionCSS.title}>
+                                    <LocalizedString id={"CS2M.UI.JoinGame"}/>
                                 </div>
+                                <JoinGameSettings></JoinGameSettings>
                             </div>
-                            <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
-                                           footer={footer}>
-                            </DetailSection>
-                    </div>
-                </InputActionConsumer>
+                        </div>
+                        <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
+                                       footer={footer}>
+                        </DetailSection>
+                </div>
             </SubScreen>
         );
     }

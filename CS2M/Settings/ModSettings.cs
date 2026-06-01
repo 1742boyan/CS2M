@@ -25,7 +25,13 @@ namespace CS2M.Settings
 
         [SettingsUISection(Section, GeneralSettings)]
         [SettingsUITextInput]
+        [SettingsUISetter(typeof(ModSettings), nameof(OnSetUsername))]
         public string Username { get; set; }
+
+        public void OnSetUsername(string username)
+        {
+            UI.UISystem.Instance?.SetUsername(username);
+        }
 
         [SettingsUISection(Section, AdvancedSettings)]
         [SettingsUITextInput]

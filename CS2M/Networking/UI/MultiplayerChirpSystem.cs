@@ -32,8 +32,11 @@ namespace CS2M.Networking.Chirper
 
         public void CreateCustomChirp(string message)
         {
+            CS2M.Log.Info($"Creating custom chirp: {message}");
+
             if (GameManager.instance == null || GameManager.instance.localizationManager == null)
             {
+                CS2M.Log.Warn("Cannot create custom chirp: GameManager or localizationManager is null!");
                 return; // Localization not ready
             }
 
@@ -54,14 +57,35 @@ namespace CS2M.Networking.Chirper
             uint creationFrame = 0;
             if (!m_TimeDataQuery.IsEmptyIgnoreFilter)
             {
-                creationFrame = m_TimeDataQuery.GetSingleton<TimeData>().m_FirstFrame; // Actually m_Frame might be better, or we can use SimulationSystem frameIndex
+                creationFrame = m_TimeDataQuery.GetSingleton<TimeData>().m_FirstFrame; 
                 
-                // Let's get the SimulationSystem from World
                 var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
                 if (simSystem != null)
                 {
                     creationFrame = simSystem.frameIndex;
                 }
+            }
+
+            // Find a valid Chirp prefab to satisfy ChirperUISystem's checks
+            Entity prefabEntity = Entity.Null;
+            var prefabQuery = entityManager.CreateEntityQuery(ComponentType.ReadOnly<Game.Prefabs.ChirpData>(), ComponentType.ReadOnly<Game.Prefabs.PrefabData>());
+            if (!prefabQuery.IsEmptyIgnoreFilter)
+            {
+                var prefabs = prefabQuery.ToEntityArray(Allocator.Temp);
+                if (prefabs.Length > 0)
+                {
+                    prefabEntity = prefabs[0];
+                }
+                prefabs.Dispose();
+            }
+
+            if (prefabEntity != Entity.Null)
+            {
+                entityManager.SetComponentData(entity, new PrefabRef { m_Prefab = prefabEntity });
+            }
+            else
+            {
+                CS2M.Log.Warn("Failed to find a valid Chirp prefab! Chirp might not show up.");
             }
 
             // Populate components

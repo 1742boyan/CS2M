@@ -3,6 +3,7 @@ import {bindValue, trigger, useValue} from "cs2/api";
 import mod from "../../mod.json";
 import {FocusBoundary, NavigationScope} from "cs2/input";
 import {useLocalization} from "cs2/l10n";
+import {Scrollable} from "cs2/ui";
 import {InputField} from "../util/input-field";
 import {setVal} from "../api";
 
@@ -134,19 +135,17 @@ export const HostGameMenu = () => {
     if (visible) {
         content = (
             <SubScreen title={translate("CS2M.UI.Multiplayer")} onClose={hideHostGame}>
-                <InputActionConsumer actions={actions}>
-                    <div className={LoadGameScreenCSS.content}>
-                            <div className={LoadGameScreenCSS.stepContainer}>
-                                <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
-                                    <div className={DetailSectionCSS.title}>{translate("CS2M.UI.HostGame")}</div>
-                                    <HostGameSettings></HostGameSettings>
-                                </div>
+                <div className={LoadGameScreenCSS.content}>
+                        <div className={LoadGameScreenCSS.stepContainer}>
+                            <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
+                                <div className={DetailSectionCSS.title}>{translate("CS2M.UI.HostGame")}</div>
+                                <HostGameSettings></HostGameSettings>
                             </div>
-                            <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
-                                           footer={footer}>
-                            </DetailSection>
-                    </div>
-                </InputActionConsumer>
+                        </div>
+                        <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
+                                       footer={footer}>
+                        </DetailSection>
+                </div>
             </SubScreen>
         );
     }
