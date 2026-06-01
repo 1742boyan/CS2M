@@ -11,11 +11,12 @@ namespace CS2M.Patches
     {
         [HarmonyPatch("GetMessageID")]
         [HarmonyPrefix]
-        public static bool GetMessageID_Prefix(Entity chirp, ref string __result, EntityManager ___m_EntityManager)
+        public static bool GetMessageID_Prefix(Entity chirp, ref string __result, ChirperUISystem __instance)
         {
-            if (___m_EntityManager.HasComponent<CS2MCustomChirp>(chirp))
+            var entityManager = __instance.EntityManager;
+            if (entityManager.HasComponent<CS2MCustomChirp>(chirp))
             {
-                var customChirp = ___m_EntityManager.GetComponentData<CS2MCustomChirp>(chirp);
+                var customChirp = entityManager.GetComponentData<CS2MCustomChirp>(chirp);
                 __result = customChirp.m_MessageKey.ToString();
                 return false; // Skip original
             }
@@ -24,11 +25,12 @@ namespace CS2M.Patches
 
         [HarmonyPatch("BindChirpSender")]
         [HarmonyPrefix]
-        public static bool BindChirpSender_Prefix(IJsonWriter binder, Entity entity, EntityManager ___m_EntityManager, ChirperUISystem __instance)
+        public static bool BindChirpSender_Prefix(IJsonWriter binder, Entity entity, ChirperUISystem __instance)
         {
-            if (___m_EntityManager.HasComponent<CS2MCustomChirp>(entity))
+            var entityManager = __instance.EntityManager;
+            if (entityManager.HasComponent<CS2MCustomChirp>(entity))
             {
-                var customChirp = ___m_EntityManager.GetComponentData<CS2MCustomChirp>(entity);
+                var customChirp = entityManager.GetComponentData<CS2MCustomChirp>(entity);
                 binder.TypeBegin("chirper.ChirpSender");
                 binder.PropertyName("entity");
                 binder.Write(Entity.Null);
