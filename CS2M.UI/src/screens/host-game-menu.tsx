@@ -58,12 +58,12 @@ export const HostGameSettings = () => {
                                 Host via Steam. Use the Steam Overlay (Shift+Tab) to invite friends.
                             </div>
                         ) : (
-                            <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                            <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
                                         onChange={(val: any) => {
                                             setIntVal("SetHostPort", val)
                                         }}></InputField>
                         )}
-                        <InputField label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
+                        <InputField key="username" label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
                                     onChange={(val: any) => {
                                         setVal("SetUsername", val)
                                     }}></InputField>
@@ -134,7 +134,6 @@ export const HostGameMenu = () => {
             <SubScreen title={translate("CS2M.UI.Multiplayer")} onClose={hideHostGame}>
                 <InputActionConsumer actions={actions}>
                     <div className={LoadGameScreenCSS.content}>
-                        <AutoNavigationScope>
                             <div className={LoadGameScreenCSS.stepContainer}>
                                 <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
                                     <div className={DetailSectionCSS.title}>{translate("CS2M.UI.HostGame")}</div>
@@ -144,7 +143,6 @@ export const HostGameMenu = () => {
                             <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
                                            footer={footer}>
                             </DetailSection>
-                        </AutoNavigationScope>
                     </div>
                 </InputActionConsumer>
             </SubScreen>

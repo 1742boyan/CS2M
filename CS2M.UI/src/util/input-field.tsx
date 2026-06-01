@@ -11,7 +11,7 @@ export const InputField = (props : any) => {
     const { translate } = useLocalization();
 
     return (
-        <FocusableEditorItem disabled={props.disabled}>
+        <FocusableEditorItem focusKey={props.label} disabled={props.disabled}>
             <div className={EditorCSS.row}>
                 <div className={EditorCSS.label}>
                     {translate(props.label)}

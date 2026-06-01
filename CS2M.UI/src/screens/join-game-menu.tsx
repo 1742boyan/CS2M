@@ -107,17 +107,17 @@ export const JoinGameSettings = () => {
                             </div>
                         ) : (
                             <>
-                                <InputField label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
+                                <InputField key="ipaddress" label={"CS2M.UI.IPAddress"} value={ipAddressValue} disabled={!enabled}
                                             onChange={(val: any) => {
                                                 setVal("SetJoinIpAddress", val)
                                             }}></InputField>
-                                <InputField label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                                <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
                                             onChange={(val: any) => {
                                                 setIntVal("SetJoinPort", val)
                                             }}></InputField>
                             </>
                         )}
-                        <InputField label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
+                        <InputField key="username" label={"CS2M.UI.Username"} value={usernameValue} disabled={!enabled}
                                     onChange={(val: any) => {
                                         setVal("SetUsername", val)
                                     }}></InputField>
@@ -234,7 +234,6 @@ export const JoinGameMenu = () => {
             <SubScreen title={<LocalizedString id={"CS2M.UI.Multiplayer"}/>} onClose={hideJoinGame}>
                 <InputActionConsumer actions={actions}>
                     <div className={LoadGameScreenCSS.content}>
-                        <AutoNavigationScope>
                             <div className={LoadGameScreenCSS.stepContainer}>
                                 <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
                                     <div className={DetailSectionCSS.title}>
@@ -246,7 +245,6 @@ export const JoinGameMenu = () => {
                             <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
                                            footer={footer}>
                             </DetailSection>
-                        </AutoNavigationScope>
                     </div>
                 </InputActionConsumer>
             </SubScreen>

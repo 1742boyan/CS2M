@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Colossal.IO.AssetDatabase;
 using CS2M.Commands;
 using CS2M.Commands.ApiServer;
@@ -69,6 +69,7 @@ namespace CS2M
             // Set up systems
             updateSystem.UpdateBefore<NetworkingSystem>(SystemUpdatePhase.PreSimulation);
             updateSystem.UpdateAt<UISystem>(SystemUpdatePhase.UIUpdate);
+            updateSystem.UpdateAt<CS2M.Networking.Chirper.MultiplayerChirpSystem>(SystemUpdatePhase.UIUpdate);
             Log.Info("Loading complete");
         }
 
