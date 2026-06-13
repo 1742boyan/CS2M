@@ -6,6 +6,7 @@ import {ChatIcon, ChatPanel} from "./screens/chat";
 import {PlayerJoiningOverlay} from "./screens/player-joining-overlay";
 import {HostQueueManager} from "./screens/host-queue-manager";
 import {LocalJoinProgress} from "./screens/local-join-progress";
+import {PlayerMouseOverlay} from "./screens/player-mouse-overlay";
 
 const register: ModRegistrar = (moduleRegistry) => {
     moduleRegistry.extend('game-ui/common/input/button/labeled-icon-button.tsx', 'LabeledIconButton', PauseMenuCSMExtend);
@@ -15,9 +16,10 @@ const register: ModRegistrar = (moduleRegistry) => {
     moduleRegistry.extend('game-ui/common/animations/transition-group-coordinator.tsx', 'TransitionGroupCoordinator', MenuUIExtensions);
 
     moduleRegistry.append('GameBottomRight', ChatIcon);
-    moduleRegistry.append('GameTopLeft', PlayerJoiningOverlay);
-    moduleRegistry.append('GameTopLeft', HostQueueManager);
+    moduleRegistry.append('Game', PlayerJoiningOverlay);
+    moduleRegistry.append('Game', HostQueueManager);
     moduleRegistry.append('GameTopLeft', LocalJoinProgress);
+    moduleRegistry.append('Game', PlayerMouseOverlay);
     getModule('game-ui/game/components/game-panel-renderer.tsx', 'gamePanelComponents')['CS2M.UI.ChatPanel'] = ChatPanel;
 }
 
