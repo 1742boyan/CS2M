@@ -36,6 +36,21 @@ namespace CS2M.Networking.Transport
         public bool InitConnect(ConnectionConfig connectionConfig)
         {
             _connectionConfig = connectionConfig;
+            
+            // Uncap Steam Datagram Relay (SDR) limit from 1Mbps to 2Gbps to allow instant map transfers
+            int sendRateMax = 2000000000;
+            IntPtr pSendRateMax = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(int));
+            System.Runtime.InteropServices.Marshal.WriteInt32(pSendRateMax, sendRateMax);
+            SteamNetworkingUtils.SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendRateMax, ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global, IntPtr.Zero, ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32, pSendRateMax);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(pSendRateMax);
+
+            // Expand SDR buffer to 50MB to prevent k_EResultLimitExceeded and game freezing
+            int sendBufferSize = 52428800;
+            IntPtr pSendBufferSize = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(int));
+            System.Runtime.InteropServices.Marshal.WriteInt32(pSendBufferSize, sendBufferSize);
+            SteamNetworkingUtils.SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendBufferSize, ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global, IntPtr.Zero, ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32, pSendBufferSize);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(pSendBufferSize);
+
             // Steamworks doesn't require a generic "start" like LiteNetLib.
             return true;
         }
