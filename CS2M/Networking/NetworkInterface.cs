@@ -40,7 +40,7 @@ namespace CS2M.Networking
         public List<Player> PlayerListJoined = new();
 
         public Queue<RemotePlayer> JoinQueue = new();
-        public bool AutoApproveJoins = true;
+        public bool AutoApproveJoins = false;
         public RemotePlayer JoiningPlayer;
         private float _prePauseSpeed = 1f;
 
@@ -261,6 +261,7 @@ namespace CS2M.Networking
                 watch.Start();
 
                 Log.Debug($"Sending world with size of {stream.Length} bytes. Slice size: {maxPacketSize}");
+                int sentCount = 0;
                 foreach (byte[] slice in stream.GetSlices())
                 {
                     remainingBytes -= slice.Length;
@@ -274,6 +275,13 @@ namespace CS2M.Networking
                     CommandInternal.Instance.SendToClient(player, cmd);
 
                     newTransfer = false;
+                    sentCount++;
+
+                    // Throttle the sending to prevent overwhelming the Steam/LiteNetLib P2P buffers
+                    if (sentCount % 64 == 0)
+                    {
+                        await System.Threading.Tasks.Task.Delay(1);
+                    }
                 }
 
                 Log.Debug($"[SaveGame] Save game packaging took {watch.ElapsedMilliseconds}ms");

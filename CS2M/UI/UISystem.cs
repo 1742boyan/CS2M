@@ -121,7 +121,7 @@ namespace CS2M.UI
             AddBinding(_joiningUsername = new ValueBinding<string>(Mod.Name, "JoiningUsername", ""));
             AddBinding(_queueLength = new ValueBinding<int>(Mod.Name, "QueueLength", 0));
             AddBinding(_joinQueue = new ValueBinding<List<string>>(Mod.Name, "JoinQueue", new List<string>(), new ListWriter<string>()));
-            AddBinding(_autoApproveJoins = new ValueBinding<bool>(Mod.Name, "AutoApproveJoins", true));
+            AddBinding(_autoApproveJoins = new ValueBinding<bool>(Mod.Name, "AutoApproveJoins", false));
 
             AddBinding(new TriggerBinding<int>(Mod.Name, "ApproveJoin", peerId => NetworkInterface.Instance.ApprovePlayer(peerId)));
             AddBinding(new TriggerBinding<int>(Mod.Name, "DenyJoin", peerId => NetworkInterface.Instance.DenyPlayer(peerId)));

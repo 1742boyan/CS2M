@@ -3,7 +3,7 @@ import { Button } from "cs2/ui";
 import mod from "../../mod.json";
 
 export const joinQueue$ = bindValue<Array<string>>(mod.id, 'JoinQueue', []);
-export const autoApproveJoins$ = bindValue<boolean>(mod.id, 'AutoApproveJoins', true);
+export const autoApproveJoins$ = bindValue<boolean>(mod.id, 'AutoApproveJoins', false);
 
 export const HostQueueManager = () => {
     const joinQueue = useValue(joinQueue$);
