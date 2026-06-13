@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Colossal;
@@ -14,13 +14,14 @@ using CS2M.UI;
 using CS2M.Util;
 using LiteNetLib;
 using Unity.Entities;
+using CS2M.Networking.Transport;
 
 namespace CS2M.Networking
 {
     public class LocalPlayer : Player
     {
         private SlicedPacketStream _packetStream;
-        private readonly SaveLoadHelper _saveLoadHelper;
+        private SaveLoadHelper _saveLoadHelper;
         private NetworkManager _networkManager;
         private UISystem _uiSystem;
 
@@ -28,7 +29,6 @@ namespace CS2M.Networking
         {
             PlayerStatusChangedEvent += PlayerStatusChanged;
             PlayerTypeChangedEvent += PlayerTypeChanged;
-            _saveLoadHelper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SaveLoadHelper>();
         }
 
         public bool GetServerInfo(ConnectionConfig connectionConfig)
@@ -52,14 +52,17 @@ namespace CS2M.Networking
                 return false;
             }
 
+            PlayerType = PlayerType.CLIENT;
+            PlayerStatus = PlayerStatus.GET_SERVER_INFO;
+
             if (!_networkManager.SetupNatConnect())
             {
+                PlayerStatus = PlayerStatus.INACTIVE;
+                PlayerType = PlayerType.NONE;
                 _uiSystem.SetJoinErrors("CS2M.UI.JoinError.InvalidIP");
                 return false;
             }
 
-            PlayerType = PlayerType.CLIENT;
-            PlayerStatus = PlayerStatus.GET_SERVER_INFO;
             return true;
         }
 
@@ -255,6 +258,11 @@ namespace CS2M.Networking
             PlayerStatus = PlayerStatus.LOADING_MAP;
             TaskManager.instance.EnqueueTask("LoadMap", async () =>
             {
+                if (_saveLoadHelper == null)
+                {
+                    _saveLoadHelper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SaveLoadHelper>();
+                }
+                
                 bool success = await _saveLoadHelper.LoadGame(_packetStream);
                 if (success)
                 {
@@ -375,7 +383,7 @@ namespace CS2M.Networking
             }
         }
 
-        public void SendToClient(NetPeer peer, CommandBase message)
+        public void SendToClient(INetworkConnection peer, CommandBase message)
         {
             message.SenderId = PlayerId;
             _networkManager.SendToClient(peer, message);
