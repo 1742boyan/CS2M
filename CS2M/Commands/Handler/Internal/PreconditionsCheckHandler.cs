@@ -28,7 +28,7 @@ namespace CS2M.Commands.Handler.Internal
             PreconditionsUtil.Result result = PreconditionsUtil.CheckPreconditions(command);
 
             // Check the client username to see if anyone on the server already have a username
-            if (NetworkInterface.Instance.PlayerListConnected.Any(p => p.Username.Equals(command.Username)))
+            if (NetworkInterface.Instance.PlayerListConnected.Any(p => string.Equals(p.Username, command.Username)))
             {
                 Log.Debug($"[Preconditions Check] Username '{command.Username}' is already connected.");
                 result.Errors |= PreconditionsUtil.Errors.USERNAME_NOT_AVAILABLE;
