@@ -47,10 +47,10 @@ export const LocalJoinProgress = () => {
                 <div style={{width: "300px", height: "10px", backgroundColor: "#333", borderRadius: "5px", overflow: "hidden"}}>
                     <div style={{width: `${percentage}%`, height: "100%", backgroundColor: "#4da6ff"}} />
                 </div>
-                <div style={{fontSize: "14px", color: "#bbb"}}>
+                <div style={{fontSize: "14px", color: "#bbb", whiteSpace: "nowrap"}}>
                     {formatBytes(downloadDone)} / {formatBytes(total)} ({percentage}%)
                 </div>
-                <div style={{fontSize: "14px", color: "#bbb"}}>
+                <div style={{fontSize: "14px", color: "#bbb", whiteSpace: "nowrap"}}>
                     Speed: {formatBytes(downloadSpeed)}/s
                 </div>
             </div>

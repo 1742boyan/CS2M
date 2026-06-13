@@ -14,6 +14,12 @@ namespace CS2M.Commands.Handler.Internal
         protected override void Handle(PlayerJoiningStatusCommand command)
         {
             UISystem.Instance.SetPlayerJoiningStatus(command.IsJoining, command.Username, command.QueueLength);
+            
+            var simSystem = Unity.Entities.World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<Game.Simulation.SimulationSystem>();
+            if (simSystem != null)
+            {
+                simSystem.selectedSpeed = command.IsJoining ? 0f : 1f;
+            }
         }
     }
 }
