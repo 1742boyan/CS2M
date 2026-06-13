@@ -61,6 +61,7 @@ namespace CS2M
             NetDebug.Logger = new NetLogWrapper();
 
             ModSupport.Instance.Init();
+            Networking.Steam.SteamInviteHandler.Instance.Initialize();
 
             // Patch methods
             var harmony = new Harmony(HarmonyPatchID);

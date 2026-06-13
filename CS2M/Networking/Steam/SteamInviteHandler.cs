@@ -29,9 +29,6 @@ namespace CS2M.Networking.Steam
 
             Log.Info($"Steam overlay join requested by friend: {friendId}, Connect string: {connectString}");
 
-            // Tell the user
-            UI.UISystem uiSystem = Unity.Entities.World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<UI.UISystem>();
-            
             // Wait, we need to trigger the NetworkManager to connect to this friend.
             ConnectionConfig config = new ConnectionConfig(friendId.m_SteamID.ToString());
 
