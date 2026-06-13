@@ -160,7 +160,7 @@ namespace CS2M.Networking
             PlayerConnectedEvent?.Invoke(player);
 
             JoinQueue.Enqueue(player);
-            CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
+            UpdateJoiningStatus();
             ProcessQueue();
         }
 
@@ -199,7 +199,7 @@ namespace CS2M.Networking
             }
         }
 
-        public void ApprovePlayer(int peerId)
+        public void ApprovePlayer(long peerId)
         {
             var player = JoinQueue.FirstOrDefault(p => p.Connection.Id == peerId);
             if (player != null)
@@ -207,19 +207,19 @@ namespace CS2M.Networking
                 // Remove from queue in case it wasn't dequeued yet
                 var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
                 JoinQueue = newQueue;
-                CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
+                UpdateJoiningStatus();
                 ApprovePlayer(player);
             }
         }
 
-        public void DenyPlayer(int peerId)
+        public void DenyPlayer(long peerId)
         {
             var player = JoinQueue.FirstOrDefault(p => p.Connection.Id == peerId);
             if (player != null)
             {
                 var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
                 JoinQueue = newQueue;
-                CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
+                UpdateJoiningStatus();
                 SendToClient(player, new JoinApprovalCommand { Approved = false });
                 player.Connection.Disconnect();
             }
@@ -229,23 +229,11 @@ namespace CS2M.Networking
         {
             JoiningPlayer = player;
             SendToClient(player, new JoinApprovalCommand { Approved = true });
+            UpdateJoiningStatus();
 
-            var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
-            if (simSystem != null)
-            {
-                _prePauseSpeed = simSystem.selectedSpeed;
-                simSystem.selectedSpeed = 0f;
-            }
-
-            SendToClients(new PlayerJoiningStatusCommand
-            {
-                IsJoining = true,
-                Username = player.Username,
-                QueueLength = JoinQueue.Count
-            });
-
-            // Get max packet size from MTU discovery
-            int maxPacketSize = player.Connection.GetMaxSinglePacketSize();
+            // Use 500KB chunk size (well within Steam's 512KB reliable limit)
+            // This drastically reduces packet count and prevents buffer exhaustion.
+            int maxPacketSize = 512000;
             maxPacketSize -= 25; // Maximum packet overhead as computed and tested in `PacketSizeOverhead` unit test
 
             // Send world
@@ -253,16 +241,21 @@ namespace CS2M.Networking
             {
                 SaveLoadHelper saveLoadHelper =
                     World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SaveLoadHelper>();
-                SlicedPacketStream stream = await saveLoadHelper.SaveGame(maxPacketSize);
-                int remainingBytes = (int)stream.Length;
+                System.IO.MemoryStream stream = await saveLoadHelper.SaveGame();
+                byte[] fullData = stream.ToArray();
+                int remainingBytes = fullData.Length;
                 bool newTransfer = true;
 
                 var watch = new Stopwatch();
                 watch.Start();
 
-                Log.Debug($"Sending world with size of {stream.Length} bytes. Slice size: {maxPacketSize}");
-                foreach (byte[] slice in stream.GetSlices())
+                Log.Debug($"Sending world with size of {fullData.Length} bytes. Slice size: {maxPacketSize}");
+                for (int i = 0; i < fullData.Length; i += maxPacketSize)
                 {
+                    int sliceLen = System.Math.Min(maxPacketSize, fullData.Length - i);
+                    byte[] slice = new byte[sliceLen];
+                    System.Array.Copy(fullData, i, slice, 0, sliceLen);
+                    
                     remainingBytes -= slice.Length;
                     var cmd = new WorldTransferCommand
                     {
@@ -297,14 +290,7 @@ namespace CS2M.Networking
                 PlayerJoinedEvent?.Invoke(JoiningPlayer);
                 
                 JoiningPlayer = null;
-                SendToClients(new PlayerJoiningStatusCommand { IsJoining = false });
-
-                var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
-                if (simSystem != null)
-                {
-                    simSystem.selectedSpeed = _prePauseSpeed;
-                }
-
+                UpdateJoiningStatus();
                 ProcessQueue();
             }
         }
@@ -312,15 +298,40 @@ namespace CS2M.Networking
         private void AbortJoining()
         {
             JoiningPlayer = null;
-            SendToClients(new PlayerJoiningStatusCommand { IsJoining = false });
+            UpdateJoiningStatus();
+            ProcessQueue();
+        }
+
+        public void UpdateJoiningStatus()
+        {
+            CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
+            
+            bool isJoining = JoiningPlayer != null || JoinQueue.Count > 0;
+            string username = JoiningPlayer?.Username ?? (JoinQueue.Count > 0 ? JoinQueue.Peek().Username : "");
+            int queueLength = JoinQueue.Count;
 
             var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
             if (simSystem != null)
             {
-                simSystem.selectedSpeed = _prePauseSpeed;
+                if (isJoining && simSystem.selectedSpeed > 0f)
+                {
+                    _prePauseSpeed = simSystem.selectedSpeed;
+                    simSystem.selectedSpeed = 0f;
+                }
+                else if (!isJoining && simSystem.selectedSpeed == 0f)
+                {
+                    simSystem.selectedSpeed = _prePauseSpeed > 0f ? _prePauseSpeed : 1f;
+                }
             }
 
-            ProcessQueue();
+            CS2M.UI.UISystem.Instance?.SetPlayerJoiningStatus(isJoining, username, queueLength);
+            
+            SendToClients(new PlayerJoiningStatusCommand
+            {
+                IsJoining = isJoining,
+                Username = username,
+                QueueLength = queueLength
+            });
         }
     }
 }

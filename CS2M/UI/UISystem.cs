@@ -37,12 +37,14 @@ namespace CS2M.UI
 
         private ValueBinding<string> _username;
         private ValueBinding<bool> _isSteamMode;
+        private ValueBinding<bool> _isHost;
 
         private ValueBinding<bool> _isPlayerJoining;
         private ValueBinding<string> _joiningUsername;
         private ValueBinding<int> _queueLength;
         private ValueBinding<List<string>> _joinQueue;
         private ValueBinding<bool> _autoApproveJoins;
+        private ValueBinding<string> _playerMouseData;
 
         private readonly Stopwatch _downloadTimer = new();
         private int _lastDownloadDone = 0;
@@ -105,7 +107,7 @@ namespace CS2M.UI
             AddBinding(_hostPort = new ValueBinding<int>(Mod.Name, "HostPort", 0));
             AddBinding(_username = new ValueBinding<string>(Mod.Name, "Username", Mod.Instance.Settings.Username ?? ""));
             AddBinding(_isSteamMode = new ValueBinding<bool>(Mod.Name, "IsSteamMode", false));
-
+            AddBinding(_isHost = new ValueBinding<bool>(Mod.Name, "IsHost", false));
             AddBinding(_playerStatus = new ValueBinding<string>(Mod.Name, "PlayerStatus", "INACTIVE"));
             AddBinding(_downloadDone = new ValueBinding<int>(Mod.Name, "DownloadDone", 0));
             AddBinding(_downloadRemaining = new ValueBinding<int>(Mod.Name, "DownloadRemaining", 0));
@@ -122,9 +124,10 @@ namespace CS2M.UI
             AddBinding(_queueLength = new ValueBinding<int>(Mod.Name, "QueueLength", 0));
             AddBinding(_joinQueue = new ValueBinding<List<string>>(Mod.Name, "JoinQueue", new List<string>(), new ListWriter<string>()));
             AddBinding(_autoApproveJoins = new ValueBinding<bool>(Mod.Name, "AutoApproveJoins", false));
+            AddBinding(_playerMouseData = new ValueBinding<string>(Mod.Name, "PlayerMouseData", "[]"));
 
-            AddBinding(new TriggerBinding<int>(Mod.Name, "ApproveJoin", peerId => NetworkInterface.Instance.ApprovePlayer(peerId)));
-            AddBinding(new TriggerBinding<int>(Mod.Name, "DenyJoin", peerId => NetworkInterface.Instance.DenyPlayer(peerId)));
+            AddBinding(new TriggerBinding<string>(Mod.Name, "ApproveJoin", peerId => NetworkInterface.Instance.ApprovePlayer(long.Parse(peerId))));
+            AddBinding(new TriggerBinding<string>(Mod.Name, "DenyJoin", peerId => NetworkInterface.Instance.DenyPlayer(long.Parse(peerId))));
             AddBinding(new TriggerBinding(Mod.Name, "KickJoiningPlayer", () => NetworkInterface.Instance.KickJoiningPlayer()));
             AddBinding(new TriggerBinding<bool>(Mod.Name, "SetAutoApproveJoins", val => 
             {
@@ -142,7 +145,13 @@ namespace CS2M.UI
                 if (status == PlayerStatus.LOADING_MAP)
                 {
                     _joinMenuVisible.Update(false);
+                    _hostMenuVisible.Update(false);
                 }
+            };
+            
+            NetworkInterface.Instance.LocalPlayer.PlayerTypeChangedEvent += (_, type) =>
+            {
+                _isHost.Update(type == PlayerType.SERVER);
             };
         }
 
@@ -265,6 +274,14 @@ namespace CS2M.UI
                 Application.OpenURL("file://" + Application.persistentDataPath);
             }
         }
+
+        public void SetAutoApproveJoins(bool val)
+        {
+            NetworkInterface.Instance.AutoApproveJoins = val;
+            _autoApproveJoins.Update(val);
+            NetworkInterface.Instance.ProcessQueue();
+        }
+
         public void SetPlayerJoiningStatus(bool isJoining, string username = "", int queueLength = 0)
         {
             _isPlayerJoining.Update(isJoining);
@@ -284,6 +301,31 @@ namespace CS2M.UI
         public void RefreshJoinQueue()
         {
             UpdateJoinQueueUI();
+        }
+
+        public void UpdatePlayerMouseData()
+        {
+            if (_playerMouseData == null) return;
+            var data = new System.Collections.Generic.List<string>();
+            var cam = UnityEngine.Camera.main;
+            foreach (var kvp in CS2M.Commands.Handler.Internal.PlayerMouseHandler.PlayerMouseStates)
+            {
+                var state = kvp.Value;
+                if (CS2M.Networking.NetworkInterface.Instance.LocalPlayer?.PlayerId == kvp.Key) continue;
+                
+                if (cam != null)
+                {
+                    var screenPos = cam.WorldToScreenPoint(state.Position);
+                    // Only render if in front of the camera
+                    if (screenPos.z > 0)
+                    {
+                        // Invert Y axis for CSS (Unity Y is bottom-up, CSS is top-down)
+                        var cssY = UnityEngine.Screen.height - screenPos.y;
+                        data.Add($"{{\"id\":{kvp.Key},\"name\":\"{state.PlayerName}\",\"x\":{screenPos.x.ToString(System.Globalization.CultureInfo.InvariantCulture)},\"y\":{cssY.ToString(System.Globalization.CultureInfo.InvariantCulture)}}}");
+                    }
+                }
+            }
+            _playerMouseData.Update($"[{string.Join(",", data)}]");
         }
     }
 }
