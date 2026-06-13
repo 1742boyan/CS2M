@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using CS2M.API.Commands;
 using CS2M.API.Networking;
 using CS2M.Commands.Data.Internal;
@@ -6,6 +6,7 @@ using CS2M.Mods;
 using CS2M.Networking;
 using CS2M.Util;
 using LiteNetLib;
+using CS2M.Networking.Transport;
 
 namespace CS2M.Commands.Handler.Internal
 {
@@ -20,7 +21,7 @@ namespace CS2M.Commands.Handler.Internal
         {
         }
 
-        public void HandleOnServer(PreconditionsCheckCommand command, NetPeer peer)
+        public void HandleOnServer(PreconditionsCheckCommand command, INetworkConnection peer)
         {
             Log.Debug($"Received Preconditions Check [PeerId: {peer.Id}]");
 

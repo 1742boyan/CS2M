@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using CS2M.Networking.Transport;
 using System.Diagnostics;
 using System.Linq;
 using Colossal;
@@ -99,7 +100,7 @@ namespace CS2M.Networking
         {
             if (player is RemotePlayer remotePlayer)
             {
-                LocalPlayer.SendToClient(remotePlayer.NetPeer, message);
+                LocalPlayer.SendToClient(remotePlayer.Connection, message);
             }
             else
             {
@@ -122,28 +123,28 @@ namespace CS2M.Networking
             LocalPlayer.SendToClients(message);
         }
 
-        public RemotePlayer GetPlayerByPeer(NetPeer peer)
+        public RemotePlayer GetPlayerByPeer(INetworkConnection peer)
         {
             return PlayerListConnected
                 .Where(p => p is RemotePlayer)
                 .Cast<RemotePlayer>()
-                .FirstOrDefault(p => p.NetPeer.Id == peer.Id);
+                .FirstOrDefault(p => p.Connection.Id == peer.Id);
         }
 
-        public bool IsPeerConnected(NetPeer peer)
+        public bool IsPeerConnected(INetworkConnection peer)
         {
             return PlayerListConnected
                 .Where(p => p is RemotePlayer)
                 .Cast<RemotePlayer>()
-                .Any(p => p.NetPeer.Id == peer.Id);
+                .Any(p => p.Connection.Id == peer.Id);
         }
 
-        public bool IsPeerJoined(NetPeer peer)
+        public bool IsPeerJoined(INetworkConnection peer)
         {
             return PlayerListJoined
                 .Where(p => p is RemotePlayer)
                 .Cast<RemotePlayer>()
-                .Any(p => p.NetPeer.Id == peer.Id);
+                .Any(p => p.Connection.Id == peer.Id);
         }
 
         public void PlayerConnected(RemotePlayer player)
@@ -153,7 +154,7 @@ namespace CS2M.Networking
             PlayerConnectedEvent?.Invoke(player);
 
             // Get max packet size from MTU discovery
-            int maxPacketSize = player.NetPeer.GetMaxSinglePacketSize(DeliveryMethod.ReliableOrdered);
+            int maxPacketSize = player.Connection.GetMaxSinglePacketSize();
             maxPacketSize -= 25; // Maximum packet overhead as computed and tested in `PacketSizeOverhead` unit test
 
             // Send world

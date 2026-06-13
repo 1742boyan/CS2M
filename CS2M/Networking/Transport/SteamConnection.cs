@@ -21,5 +21,10 @@ namespace CS2M.Networking.Transport
         }
 
         public object NativePeer => _connection;
+
+        public int GetMaxSinglePacketSize()
+        {
+            return 1024;
+        }
     }
 }

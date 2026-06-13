@@ -94,22 +94,13 @@ namespace CS2M.Networking
 
             if (command is PreconditionsCheckCommand preconditionsCheckCommand)
             {
-                if (peer.NativePeer is NetPeer netPeer)
-                {
-                    ((PreconditionsCheckHandler)handler).HandleOnServer(preconditionsCheckCommand, netPeer);
-                }
-                // TODO: Handle precondition check on server for Steamworks
+                ((PreconditionsCheckHandler)handler).HandleOnServer(preconditionsCheckCommand, peer);
                 return;
             }
 
             if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
-                bool isConnected = false;
-                if (peer.NativePeer is NetPeer netPeer)
-                {
-                    isConnected = NetworkInterface.Instance.IsPeerConnected(netPeer);
-                }
-
+                bool isConnected = NetworkInterface.Instance.IsPeerConnected(peer);
                 if (!isConnected)
                 {
                     return;
@@ -145,10 +136,7 @@ namespace CS2M.Networking
             else if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
                 MultiplayerChirpSystem.Instance?.CreateCustomChirp("A player disconnected.");
-                if (peer.NativePeer is NetPeer netPeer)
-                {
-                    NetworkInterface.Instance.GetPlayerByPeer(netPeer)?.HandleDisconnect();
-                }
+                NetworkInterface.Instance.GetPlayerByPeer(peer)?.HandleDisconnect();
             }
         }
 
@@ -169,10 +157,9 @@ namespace CS2M.Networking
             _transport?.SendToAllClients(message);
         }
 
-        public void SendToClient(NetPeer peer, CommandBase message)
+        public void SendToClient(INetworkConnection peer, CommandBase message)
         {
-            // Backward compatibility for LiteNetLib peers
-            _transport?.SendToClient(new LiteNetConnection(peer), message);
+            _transport?.SendToClient(peer, message);
         }
 
         public void SendToServer(CommandBase message)
