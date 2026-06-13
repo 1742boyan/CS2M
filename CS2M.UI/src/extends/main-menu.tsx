@@ -4,6 +4,7 @@ import {trigger} from "cs2/api";
 import mod from "../../mod.json";
 import {JoinGameMenu} from "../screens/join-game-menu";
 import {HostGameMenu} from "../screens/host-game-menu";
+import {ErrorDialog} from "../screens/error-dialog";
 
 export function showMultiplayerMenu() {
     trigger(mod.id, "ShowMultiplayerMenu");
@@ -20,6 +21,7 @@ export const MenuUIExtensions : ModuleRegistryExtend = (Component) => {
                 <>
                     <JoinGameMenu></JoinGameMenu>
                     <HostGameMenu></HostGameMenu>
+                    <ErrorDialog></ErrorDialog>
                 </>;
         }
         return (

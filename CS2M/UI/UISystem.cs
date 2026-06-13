@@ -10,6 +10,7 @@ using Game;
 using Game.SceneFlow;
 using Game.UI;
 using Game.UI.InGame;
+using UnityEngine;
 
 namespace CS2M.UI
 {
@@ -29,6 +30,7 @@ namespace CS2M.UI
         private ValueBinding<bool> _joinMenuVisible;
         private ValueBinding<int> _joinPort;
         private ValueBinding<List<string>> _joinErrorMessage;
+        private ValueBinding<bool> _showErrorDialog;
 
         private ValueBinding<List<ModSupportStatus>> _modSupportStatus;
         private ValueBinding<string> _playerStatus;
@@ -104,6 +106,10 @@ namespace CS2M.UI
             AddBinding(_downloadSpeed = new ValueBinding<int>(Mod.Name, "DownloadSpeed", 0));
             AddBinding(_joinErrorMessage = new ValueBinding<List<string>>(Mod.Name, "JoinErrorMessage",
                 new List<string>(), new ListWriter<string>()));
+            AddBinding(_showErrorDialog = new ValueBinding<bool>(Mod.Name, "ShowErrorDialog", false));
+
+            AddBinding(new TriggerBinding(Mod.Name, "CloseErrorDialog", CloseErrorDialog));
+            AddBinding(new TriggerBinding(Mod.Name, "OpenLogsFolder", OpenLogsFolder));
 
             RegisterChatPanelBindings();
 
@@ -210,11 +216,31 @@ namespace CS2M.UI
         public void SetJoinErrors(params string[] errorMessageKey)
         {
             _joinErrorMessage.Update(errorMessageKey.ToList());
+            _showErrorDialog.Update(true);
         }
 
         public void SetUsername(string username)
         {
             _username?.Update(username);
+        }
+
+        private void CloseErrorDialog()
+        {
+            _joinErrorMessage.Update(new List<string>());
+            _showErrorDialog.Update(false);
+        }
+
+        private void OpenLogsFolder()
+        {
+            string logsDir = System.IO.Path.Combine(Application.persistentDataPath, "Logs");
+            if (System.IO.Directory.Exists(logsDir))
+            {
+                Application.OpenURL("file://" + logsDir);
+            }
+            else
+            {
+                Application.OpenURL("file://" + Application.persistentDataPath);
+            }
         }
     }
 }
