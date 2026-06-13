@@ -234,12 +234,16 @@ namespace CS2M.Helpers
             return stream;
         }
 
+        public static bool IsMultiplayerLoad = false;
+
         public async Task<bool> LoadGame(SlicedPacketStream data)
         {
             var saveGame = new SaveWrapper();
             ReadSystemPatch.Stream = data;
             AssetDataPatch.OverrideAssetData = true;
+            IsMultiplayerLoad = true;
             bool result = await GameManager.instance.Load(GameMode.Game, Purpose.LoadGame, saveGame);
+            IsMultiplayerLoad = false;
             AssetDataPatch.OverrideAssetData = false;
             ReadSystemPatch.Stream = null;
             return result;
@@ -306,6 +310,31 @@ namespace CS2M.Helpers
 
             __result = new AsyncReadDescriptor("Multiplayer", "multiplayer");
             return false;
+        }
+    }
+
+    /// <summary>
+    ///     This patch ensures that the ContextFormat is initialized when loading a multiplayer save,
+    ///     preventing a NullReferenceException in RequiredComponentSystem.
+    /// </summary>
+    [HarmonyPatch(typeof(LoadGameSystem))]
+    [HarmonyPatch("OnUpdate")]
+    internal class LoadGameSystemPatch
+    {
+        public static void Prefix(LoadGameSystem __instance)
+        {
+            if (SaveLoadHelper.IsMultiplayerLoad)
+            {
+                var ctx = __instance.context;
+                // Re-initialize to ensure ContextFormat is properly allocated, preventing NRE in RequiredComponentSystem
+                __instance.context = new Colossal.Serialization.Entities.Context(
+                    ctx.purpose, 
+                    ctx.version, 
+                    ctx.instigatorGuid, 
+                    0, 
+                    Unity.Collections.Allocator.Persistent
+                );
+            }
         }
     }
 }

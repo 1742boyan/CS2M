@@ -1,7 +1,8 @@
 import { bindValue, trigger, useValue } from "cs2/api";
-import { LocalizedString } from "cs2/l10n";
+import { LocalizedString, useLocalization } from "cs2/l10n";
 import mod from "../../mod.json";
 import { getModule } from "cs2/modding";
+import { Button } from "cs2/ui";
 
 export const showErrorDialog = bindValue<boolean>(mod.id, 'ShowErrorDialog', false);
 export const joinErrorMessage = bindValue<Array<string>>(mod.id, 'JoinErrorMessage', []);
@@ -9,52 +10,66 @@ export const joinErrorMessage = bindValue<Array<string>>(mod.id, 'JoinErrorMessa
 export const ErrorDialog = () => {
     const visible = useValue(showErrorDialog);
     const errMsg = useValue(joinErrorMessage);
-    const Button = getModule('game-ui/menu/components/shared/button/button.tsx', 'Button');
+
+    const {translate} = useLocalization();
 
     if (!visible) return null;
 
     let messages = <></>;
+    let plainTextError = "";
     if (errMsg.length > 0) {
         messages = <span style={{color: "#ff8080"}}><LocalizedString id={"CS2M.UI.JoinError.Intro"}/></span>;
+        plainTextError = translate("CS2M.UI.JoinError.Intro", "Error joining game:") + "\n";
     }
-    let plainTextError = "";
+
     for (let i = 0; i < errMsg.length; i++) {
         let err = errMsg[i];
-        plainTextError += err + "\n";
         let message;
         if (err.startsWith("precondition:")) {
-            err = err.substring(13);
-            switch (err) {
+            const code = err.substring(13);
+            switch (code) {
                 case "GAME_VERSION_MISMATCH":
                 case "MOD_VERSION_MISMATCH": {
-                    const err_id = "CS2M.UI.JoinError." + err;
-                    message = <LocalizedString id={err_id} args={{SERVER: errMsg[++i], CLIENT: errMsg[++i]}}/>;
+                    const err_id = "CS2M.UI.JoinError." + code;
+                    const serverVer = errMsg[++i];
+                    const clientVer = errMsg[++i];
+                    let translated = translate(err_id, err_id) || err_id;
+                    translated = translated.replace("{SERVER}", serverVer).replace("{CLIENT}", clientVer);
+                    plainTextError += "- " + translated + "\n";
+                    message = <LocalizedString id={err_id} args={{SERVER: serverVer, CLIENT: clientVer}}/>;
                     break;
                 }
                 case "DLCS_MISMATCH":
                 case "MODS_MISMATCH": {
-                    const err_id = "CS2M.UI.JoinError." + err;
-                    message = <LocalizedString id={err_id}/>;
+                    const err_id = "CS2M.UI.JoinError." + code;
+                    let translated = translate(err_id, err_id) || err_id;
                     const serverList = errMsg[++i];
                     const clientList = errMsg[++i];
+                    
+                    message = <LocalizedString id={err_id}/>;
                     if (serverList != '') {
-                        const err_id = "CS2M.UI.JoinError." + err + ".server";
-                        message = <>{message}<LocalizedString id={err_id} args={{SERVER: serverList}}/></>;
+                        const s_err_id = "CS2M.UI.JoinError." + code + ".server";
+                        translated += " Server: " + serverList;
+                        message = <>{message}<LocalizedString id={s_err_id} args={{SERVER: serverList}}/></>;
                     }
                     if (clientList != '') {
-                        const err_id = "CS2M.UI.JoinError." + err + ".client";
-                        message = <>{message}<LocalizedString id={err_id} args={{CLIENT: clientList}}/></>;
+                        const c_err_id = "CS2M.UI.JoinError." + code + ".client";
+                        translated += " Client: " + clientList;
+                        message = <>{message}<LocalizedString id={c_err_id} args={{CLIENT: clientList}}/></>;
                     }
+                    plainTextError += "- " + translated + "\n";
                     break;
                 }
                 case "USERNAME_NOT_AVAILABLE":
                 case "PASSWORD_INCORRECT": {
-                    const err_id = "CS2M.UI.JoinError." + err;
+                    const err_id = "CS2M.UI.JoinError." + code;
+                    plainTextError += "- " + (translate(err_id, err_id) || err_id) + "\n";
                     message = <LocalizedString id={err_id}/>;
                     break;
                 }
             }
         } else {
+            plainTextError += "- " + (translate(err, err) || err) + "\n";
             message = <LocalizedString id={err}/>;
         }
         messages = <>{messages}<br/>{message}</>;

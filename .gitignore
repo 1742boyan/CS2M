@@ -8,6 +8,7 @@ riderModule.iml
 .vs/
 assemblies/*.dll
 Releases/**
+Dumper/**
 
 CS2M/Library
 *.sln.DotSettings.user
