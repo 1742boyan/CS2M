@@ -199,10 +199,8 @@ namespace CS2M.Networking
                 return false;
             }
 
-            //TODO: Implement JoinRequest
-
             PlayerStatus = PlayerStatus.WAITING_TO_JOIN;
-            return DownloadingMap(); //TODO: Switch to 'return true;', when JoinRequest implemented
+            return true;
         }
 
         public bool DownloadingMap()
@@ -281,6 +279,10 @@ namespace CS2M.Networking
             }
 
             PlayerStatus = PlayerStatus.PLAYING;
+            if (PlayerType == PlayerType.CLIENT)
+            {
+                SendToServer(new ClientJoinedCommand());
+            }
             return true;
         }
 

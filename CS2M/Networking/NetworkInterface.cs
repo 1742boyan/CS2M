@@ -11,6 +11,7 @@ using CS2M.Commands.Data.Internal;
 using CS2M.Helpers;
 using LiteNetLib;
 using Unity.Entities;
+using Game.Simulation;
 
 namespace CS2M.Networking
 {
@@ -37,6 +38,11 @@ namespace CS2M.Networking
         ///     List of all players, which are connected on game level
         /// </summary>
         public List<Player> PlayerListJoined = new();
+
+        public Queue<RemotePlayer> JoinQueue = new();
+        public bool AutoApproveJoins = true;
+        public RemotePlayer JoiningPlayer;
+        private float _prePauseSpeed = 1f;
 
         public NetworkInterface()
         {
@@ -149,9 +155,89 @@ namespace CS2M.Networking
 
         public void PlayerConnected(RemotePlayer player)
         {
-            Log.Debug($"RemotePlayer '{player.Username}' connected.");
+            Log.Debug($"RemotePlayer '{player.Username}' connected. Adding to Join Queue.");
             PlayerListConnected.Add(player);
             PlayerConnectedEvent?.Invoke(player);
+
+            JoinQueue.Enqueue(player);
+            ProcessQueue();
+        }
+
+        public void PlayerDisconnected(INetworkConnection peer)
+        {
+            var player = GetPlayerByPeer(peer);
+            if (player != null)
+            {
+                PlayerListConnected.Remove(player);
+                PlayerListJoined.Remove(player);
+                PlayerDisconnectedEvent?.Invoke(player);
+
+                if (JoinQueue.Contains(player))
+                {
+                    JoinQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peer.Id));
+                }
+                
+                if (JoiningPlayer != null && JoiningPlayer.Connection.Id == peer.Id)
+                {
+                    AbortJoining();
+                }
+            }
+        }
+
+        public void ProcessQueue()
+        {
+            if (JoiningPlayer != null)
+                return; // Wait until current joining player finishes
+
+            if (JoinQueue.Count > 0 && AutoApproveJoins)
+            {
+                var player = JoinQueue.Dequeue();
+                ApprovePlayer(player);
+            }
+        }
+
+        public void ApprovePlayer(int peerId)
+        {
+            var player = JoinQueue.FirstOrDefault(p => p.Connection.Id == peerId);
+            if (player != null)
+            {
+                // Remove from queue in case it wasn't dequeued yet
+                var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
+                JoinQueue = newQueue;
+                ApprovePlayer(player);
+            }
+        }
+
+        public void DenyPlayer(int peerId)
+        {
+            var player = JoinQueue.FirstOrDefault(p => p.Connection.Id == peerId);
+            if (player != null)
+            {
+                var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
+                JoinQueue = newQueue;
+                SendToClient(player, new JoinApprovalCommand { Approved = false });
+                player.Connection.Disconnect();
+            }
+        }
+
+        private void ApprovePlayer(RemotePlayer player)
+        {
+            JoiningPlayer = player;
+            SendToClient(player, new JoinApprovalCommand { Approved = true });
+
+            var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
+            if (simSystem != null)
+            {
+                _prePauseSpeed = simSystem.selectedSpeed;
+                simSystem.selectedSpeed = 0f;
+            }
+
+            SendToClients(new PlayerJoiningStatusCommand
+            {
+                IsJoining = true,
+                Username = player.Username,
+                QueueLength = JoinQueue.Count
+            });
 
             // Get max packet size from MTU discovery
             int maxPacketSize = player.Connection.GetMaxSinglePacketSize();
@@ -187,6 +273,49 @@ namespace CS2M.Networking
 
                 Log.Debug($"[SaveGame] Save game packaging took {watch.ElapsedMilliseconds}ms");
             });
+        }
+
+        public void KickJoiningPlayer()
+        {
+            if (JoiningPlayer != null)
+            {
+                JoiningPlayer.Connection.Disconnect();
+                AbortJoining();
+            }
+        }
+
+        public void ClientFinishedJoining(INetworkConnection peer)
+        {
+            if (JoiningPlayer != null && JoiningPlayer.Connection.Id == peer.Id)
+            {
+                PlayerListJoined.Add(JoiningPlayer);
+                PlayerJoinedEvent?.Invoke(JoiningPlayer);
+                
+                JoiningPlayer = null;
+                SendToClients(new PlayerJoiningStatusCommand { IsJoining = false });
+
+                var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
+                if (simSystem != null)
+                {
+                    simSystem.selectedSpeed = _prePauseSpeed;
+                }
+
+                ProcessQueue();
+            }
+        }
+
+        private void AbortJoining()
+        {
+            JoiningPlayer = null;
+            SendToClients(new PlayerJoiningStatusCommand { IsJoining = false });
+
+            var simSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<SimulationSystem>();
+            if (simSystem != null)
+            {
+                simSystem.selectedSpeed = _prePauseSpeed;
+            }
+
+            ProcessQueue();
         }
     }
 }

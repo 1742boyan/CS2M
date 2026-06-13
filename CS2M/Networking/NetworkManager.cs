@@ -137,6 +137,7 @@ namespace CS2M.Networking
             {
                 MultiplayerChirpSystem.Instance?.CreateCustomChirp("A player disconnected.");
                 NetworkInterface.Instance.GetPlayerByPeer(peer)?.HandleDisconnect();
+                NetworkInterface.Instance.PlayerDisconnected(peer);
             }
         }
 
