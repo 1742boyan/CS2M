@@ -1,0 +1,141 @@
+[2026-06-13 16:12:17,448] [INFO]  Odin Serializer ArchitectureInfo initialization with defaults (all unaligned read/writes disabled).
+[2026-06-13 16:12:17,534] [INFO]  Odin Serializer detected whitelisted runtime platform WindowsPlayer and memory read test succeeded; enabling all unaligned memory read/writes.
+[2026-06-13 16:12:18,586] [INFO]  Command line: Cities2.exe
+--pdx-launcher-session-token
+************************************
+--paradox-account-userid
+************************************
+[2026-06-13 16:12:45,942] [INFO]  GameManager created! (27509.3895ms)
+[2026-06-13 16:12:46,964] [INFO]  Applying quality scaling profile based on 7 GB VRAM
+[2026-06-13 16:12:47,093] [INFO]  Applying quality scaling profile based on 7 GB VRAM
+[2026-06-13 16:12:47,256] [INFO]  Applying resolution: 1920x1080x165.003Hz Fullscreen
+[2026-06-13 16:12:47,257] [INFO]  Creating ECS world
+[2026-06-13 16:12:55,853] [INFO]  Date: 06/13/2026 13:12:55
+Game version: 1.5.10f1 (330.05c1) [6202.16258] Windows Steamworks
+Game configuration: Release (Mono)
+COre version: 1.0.0f1 (0.0000) [0.0]
+Localization version: 1.0.0a1 (330.05c1) [6202.16236]
+UI version: 1.0.0f1 (330.05c1) [6202.16237]
+Unity version: 2022.3.71f1
+Cohtml version: 1.64.0.7
+ATL Version: 3.4.1.0
+Discord SDK Version: 3.2.1
+Steamworks.NET Version: 20.2.0
+Steamworks SDK Version: 1.57
+Steam API DLL Version:  08.02.21.95
+Landmark Buildings: 1.5.10f1 (330.05c1) [6202.16258]
+San Francisco Set: 1.5.10f1 (330.05c1) [6202.16258]
+CS 1 Treasure Hunt: 1.5.10f1 (330.05c1) [6202.16258]
+Bridges And Ports: 1.5.10f1 (330.05c1) [6202.16258]
+Deluxe Relax Radio: 1.0.3f1 (330.05c1) [6202.16507]
+Game: 1.5.10f1 (330.05c1) [6202.17660]
+[2026-06-13 16:12:55,853] [INFO]  Type: Desktop
+OS: Windows 11  (10.0.26200) 64bit
+System memory: 15.916 GB
+Graphics device: NVIDIA GeForce RTX 3070 (Version: Direct3D 11.0 [level 11.1])
+Graphics memory: 7.830 GB
+Max texture size: 16384
+Shader level: 50
+3D textures: True
+Shadows: True
+Compute: True
+CPU: AMD Ryzen 7 5700X 8-Core Processor 
+Core count: 16
+Platform: WindowsPlayer
+Screen resolution: 1920x1080x165
+Window resolution: 1920x1080
+DPI: 96
+Rendering Threading Mode: LegacyJobified
+CLR: 4.0.30319.42000
+Modding runtime: Builtin
+Scripting runtime: Mono 6.13.0 (Visual Studio built mono)
+[2026-06-13 16:12:55,856] [INFO]  Configuration: {"startGame":"00000000000000000000000000000000","disablePDXSDK":false,"noThumbnails":false,"profilerTarget":null,"saveAllSettings":false,"cleanupSettings":true,"developerMode":false,"uiDeveloperMode":false,"qaDeveloperMode":false,"duplicateLogToDefault":false,"disableUserSection":false,"disableModding":false,"disableCodeModding":false,"captureStdout":"None","showHelp":null,"continuelastsave":false,"benchmark":false}
+[2026-06-13 16:12:56,378] [INFO]  Added 8990/8990 explicitly referenced prefabs in 0.3064286s
+[2026-06-13 16:12:56,378] [INFO]  LoadAssetLibraryAsync performed in 564.9066ms
+[2026-06-13 16:12:59,936] [INFO]  Added 8990/8990 explicitly referenced prefabs in 0.0076894s
+[2026-06-13 16:12:59,936] [INFO]  LoadAssetLibraryAsync performed in 144.4563ms
+[2026-06-13 16:13:00,137] [INFO]  Preload Mods at boot
+[2026-06-13 16:13:02,173] [INFO]  Creating ECS systems
+[2026-06-13 16:13:04,764] [INFO]  Applying resolution: 1920x1080x165.003Hz Fullscreen
+[2026-06-13 16:13:04,769] [INFO]  Initializing VT with mipbias 1 - Trilinear
+[2026-06-13 16:13:09,503] [INFO]  Current resolution: 1920x1080x165.003Hz Fullscreen - Current quality settings: DynamicResolutionScaleSettings: Medium - AntiAliasingQualitySettings: Medium - CloudsQualitySettings: Low - FogQualitySettings: Low - VolumetricsQualitySettings: Low - SSAOQualitySettings: Low - SSGIQualitySettings: Disabled - SSRQualitySettings: Disabled - DepthOfFieldQualitySettings: Medium - MotionBlurQualitySettings: Disabled - ShadowsQualitySettings: Disabled - TerrainQualitySettings: Medium - WaterQualitySettings: Medium - LevelOfDetailQualitySettings: Medium - TextureQualitySettings: Medium
+[2026-06-13 16:13:10,442] [INFO]  Loaded 131 prefabs in 0.9211206s
+[2026-06-13 16:13:22,562] [INFO]  Boot completed
+[2026-06-13 16:13:22,563] [INFO]  Starting game from ''
+[2026-06-13 16:13:22,565] [INFO]  Loading mode MainMenu with purpose Cleanup
+[2026-06-13 16:13:22,920] [INFO]  HandleLocaleCaching (1.3363ms)
+[2026-06-13 16:13:32,778] [INFO]  Loading completed
+[2026-06-13 16:13:33,854] [INFO]  MainMenu reached
+[2026-06-13 16:13:33,854] [INFO]  GameManager initialized! (75198.3149ms)
+[2026-06-13 16:15:59,733] [INFO]  Starting game from 'Multiplayer Save Game'
+[2026-06-13 16:15:59,733] [WARN]  Loading with SaveGameData. Session guid will be lost, rather use metadata if available
+[2026-06-13 16:15:59,735] [INFO]  Loading mode Game with purpose LoadGame
+[2026-06-13 16:15:59,753] [INFO]  HandleLocaleCaching (0.0005ms)
+[2026-06-13 16:16:00,513] [CRITICAL]  System update error during Deserialize->SerializerSystem:
+IOException: Failed to read from multiplayer stream!
+  at CS2M.Helpers.ReadSystemPatch.Prefix (System.Void* data, System.Int32 bytes) [0x0002b] in <8effc2b5dff741f2bf7070edd496f931>:0 
+  at (wrapper dynamic-method) Colossal.IO.AssetDatabase.StreamBinaryReader.Colossal.IO.AssetDatabase.StreamBinaryReader.ReadBytes_Patch1(Colossal.IO.AssetDatabase.StreamBinaryReader,void*,int,Unity.Jobs.JobHandle&)
+  at Game.Serialization.ReadSystem.ReadData (Colossal.IO.AssetDatabase.StreamBinaryReader reader, Unity.Collections.NativeArray`1[T] data, Unity.Jobs.JobHandle& dependency) [0x00010] in <1251efa692c74370bc875c1e3ef4eebd>:0 
+  at Game.Serialization.ReadSystem.GetBuffer (Colossal.Serialization.Entities.BufferFormat format, Unity.Jobs.JobHandle& dependency) [0x000db] in <1251efa692c74370bc875c1e3ef4eebd>:0 
+  at Colossal.Serialization.Entities.EntityDeserializer`1[TReadBuffer].AddBufferCount (System.Int32 delta) [0x00019] in <4582587599934b0c925169d67ba07f4f>:0 
+  at Colossal.Serialization.Entities.EntityDeserializer`1[TReadBuffer].GetNextBuffer (Unity.Jobs.JobHandle& dependency) [0x00045] in <4582587599934b0c925169d67ba07f4f>:0 
+  at Colossal.Serialization.Entities.EntityDeserializer`1[TReadBuffer].DeserializeComponents[TReader] (Colossal.Serialization.Entities.Context context, Colossal.Serialization.Entities.EntityDeserializer`1+ArchetypeInfo[TReadBuffer]& archetype, Unity.Collections.Allocator allocator) [0x00000] in <4582587599934b0c925169d67ba07f4f>:0 
+  at Colossal.Serialization.Entities.EntityDeserializer`1[TReadBuffer].Deserialize[TReader,TFormatTags] (Colossal.Serialization.Entities.Context& context, Unity.Entities.ComponentType[] extraComponents) [0x0006f] in <4582587599934b0c925169d67ba07f4f>:0 
+  at Game.Serialization.SerializerSystem.OnUpdate () [0x00116] in <1251efa692c74370bc875c1e3ef4eebd>:0 
+  at Unity.Entities.SystemBase.Update () [0x0004e] in <584d2405b11a499db7a1feb42bd1a655>:0 
+  at Game.UpdateSystem.Update (Game.SystemUpdatePhase phase) [0x00051] in <1251efa692c74370bc875c1e3ef4eebd>:0 
+Game.UpdateSystem:Update(SystemUpdatePhase)
+Game.Serialization.LoadGameSystem:Game.Serialization.LoadGameSystem.OnUpdate_Patch1(LoadGameSystem)
+Unity.Entities.SystemBase:Update()
+Game.UpdateSystem:Update(SystemUpdatePhase)
+Game.SceneFlow.GameManager:UpdateWorld()
+Game.SceneFlow.GameManager:Update()
+[2026-06-13 16:16:00,602] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,603] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,603] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,603] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,603] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,605] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,605] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,605] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,606] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,606] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,606] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,607] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,607] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,607] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,608] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,608] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,608] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,608] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,609] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,609] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,609] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,610] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,610] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,611] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,611] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,611] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,612] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,612] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,612] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,613] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,613] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,613] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,613] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,615] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,615] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,615] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,616] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,616] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,616] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,617] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,617] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,618] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,618] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,619] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,619] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,619] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,619] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,619] [WARN]  Unknown prefab ID: [Missing]:[Missing]
+[2026-06-13 16:16:00,620] [WARN]  Unknown prefab ID: [Missing]:[Missing]

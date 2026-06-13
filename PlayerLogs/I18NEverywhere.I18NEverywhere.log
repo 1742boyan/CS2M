@@ -1,0 +1,13 @@
+[2026-06-13 16:13:04,639] [INFO]  I18NEverywhere now loading...
+[2026-06-13 16:13:04,639] [INFO]  Current mod asset at C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II/.cache/Mods/pdx_mods/75426_67/I18NEverywhere.dll
+[2026-06-13 16:13:04,639] [INFO]  Apply harmony patching...
+[2026-06-13 16:13:04,744] [INFO]  Harmony patched.
+[2026-06-13 16:13:04,752] [INFO]  Cached mods: 
+		CS2M
+		I18n Everywhere
+[2026-06-13 16:13:04,752] [INFO]  Cached language packs: 
+
+[2026-06-13 16:13:33,282] [INFO]  Init Load.
+[2026-06-13 16:13:33,282] [INFO]  localeId: en-US
+[2026-06-13 16:13:33,282] [INFO]  fallbackLocaleId: en-US
+[2026-06-13 16:13:33,494] [INFO]  I18NEverywhere initialized on MainMenu

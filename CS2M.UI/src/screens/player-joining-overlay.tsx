@@ -44,7 +44,7 @@ export const PlayerJoiningOverlay = () => {
                 )}
                 
                 <div style={{marginTop: "10px"}}>
-                    <Button onSelect={onKick}>Kick Player</Button>
+                    <button style={{padding: "5px 15px", backgroundColor: "#c0392b", color: "white", border: "none", borderRadius: "4px", cursor: "pointer"}} onClick={onKick}>Kick Player</button>
                 </div>
             </div>
         </div>

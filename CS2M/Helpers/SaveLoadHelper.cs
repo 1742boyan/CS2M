@@ -158,7 +158,7 @@ namespace CS2M.Helpers
                 _slices.Add(slice);
             }
 
-            _streamLength += _sliceLength;
+            _streamLength += slice.Length;
             return true;
         }
 

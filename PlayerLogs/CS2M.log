@@ -1,0 +1,12 @@
+[2026-06-13 16:13:04,364] [INFO]  Loading CS2M version 0.0.1.0
+[2026-06-13 16:13:04,364] [INFO]  Loading Mod Settings
+[2026-06-13 16:13:04,369] [INFO]  Configured and initialised mod settings
+[2026-06-13 16:13:04,373] [INFO]  Mod connected: Cities: Skylines II
+[2026-06-13 16:13:04,414] [INFO]  Initializing data model with 9 commands...
+[2026-06-13 16:13:04,422] [INFO]  Initializing API data model with 3 commands...
+[2026-06-13 16:13:04,423] [INFO]  SteamInviteHandler initialized.
+[2026-06-13 16:13:04,609] [INFO]  Loading complete
+[2026-06-13 16:13:12,888] [INFO]  Chat message: [CS2M] - Welcome to Cities: Skylines 2 Multiplayer!
+[2026-06-13 16:14:56,524] [INFO]  ShowMultiplayerMenu triggered. GameMode: MainMenu
+[2026-06-13 16:15:03,710] [INFO]  Steam overlay join requested by friend: 76561198143098729, Connect string: steam_p2p
+[2026-06-13 16:15:36,349] [INFO]  Host approved join request. Waiting for map data...

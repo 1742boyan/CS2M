@@ -177,7 +177,22 @@ namespace CS2M.Networking.Transport
         {
             IntPtr buffer = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length);
             System.Runtime.InteropServices.Marshal.Copy(data, 0, buffer, data.Length);
-            SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
+            
+            EResult result;
+            do
+            {
+                result = SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
+                if (result == EResult.k_EResultLimitExceeded)
+                {
+                    System.Threading.Thread.Sleep(1);
+                }
+                else if (result != EResult.k_EResultOK)
+                {
+                    Log.Error($"Failed to send Steam P2P message: {result}");
+                    break;
+                }
+            } while (result == EResult.k_EResultLimitExceeded);
+
             System.Runtime.InteropServices.Marshal.FreeHGlobal(buffer);
         }
 

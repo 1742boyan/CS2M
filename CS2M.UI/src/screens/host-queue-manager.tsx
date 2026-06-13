@@ -49,8 +49,8 @@ export const HostQueueManager = () => {
                         }}>
                             <span style={{color: "white"}}>{username}</span>
                             <div style={{display: "flex", gap: "5px"}}>
-                                <Button onSelect={() => trigger(mod.id, "ApproveJoin", peerId)} style={{padding: "2px 8px", minHeight: "unset", minWidth: "unset"}}>Approve</Button>
-                                <Button onSelect={() => trigger(mod.id, "DenyJoin", peerId)} style={{padding: "2px 8px", minHeight: "unset", minWidth: "unset"}}>Deny</Button>
+                                <button onClick={() => trigger(mod.id, "ApproveJoin", peerId)} style={{padding: "2px 8px"}}>Approve</button>
+                                <button onClick={() => trigger(mod.id, "DenyJoin", peerId)} style={{padding: "2px 8px"}}>Deny</button>
                             </div>
                         </div>
                     );

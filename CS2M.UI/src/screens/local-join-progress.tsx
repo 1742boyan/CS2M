@@ -80,7 +80,7 @@ export const LocalJoinProgress = () => {
                 
                 {allowCancel && (
                     <div style={{marginTop: "10px"}}>
-                        <Button onSelect={onCancel}>Cancel</Button>
+                        <button style={{padding: "5px 15px", backgroundColor: "#c0392b", color: "white", border: "none", borderRadius: "4px", cursor: "pointer"}} onClick={onCancel}>Cancel</button>
                     </div>
                 )}
             </div>

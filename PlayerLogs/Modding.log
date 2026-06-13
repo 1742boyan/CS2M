@@ -1,0 +1,16 @@
+[2026-06-13 16:12:18,690] [INFO]  Modding runtime: Builtin
+[2026-06-13 16:13:04,180] [INFO]  
+======= Active Playset =======
+	Initial playset (6706595)
+======= Enabled Mods =======
+	 - I18n Everywhere v1.5.0+build.1 (75426)
+[2026-06-13 16:13:04,286] [INFO]  Mods registered in 104.235ms
+[2026-06-13 16:13:04,302] [INFO]  Loaded CS2M.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null in 14.4639ms
+[2026-06-13 16:13:04,334] [INFO]  Loaded additional Burst code C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II/mods/CS2M/CS2M_win_x86_64.dll
+[2026-06-13 16:13:04,610] [INFO]  Loaded CS2M, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null in 307.427ms
+[2026-06-13 16:13:04,610] [INFO]  Loaded CS2M.BaseGame, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null in 0.0103ms
+[2026-06-13 16:13:04,635] [INFO]  Loaded additional Burst code C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II/.cache/Mods/pdx_mods/75426_67/I18NEverywhere_win_x86_64.dll
+[2026-06-13 16:13:04,754] [INFO]  Loaded I18NEverywhere, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null in 144.1965ms
+[2026-06-13 16:13:04,756] [INFO]  Loaded 0Harmony, Version=2.2.2.0, Culture=neutral, PublicKeyToken=null in 0.8156ms
+[2026-06-13 16:13:04,756] [INFO]  Mods initialized in 469.2465ms
+[2026-06-13 16:13:04,762] [INFO]  Registered UI Module {"m_ModuleId":"CS2M","m_Author":"kaenganxt","m_ModuleVersion":{"Major":1,"Minor":0,"Build":0,"Revision":-1,"MajorRevision":-1,"MinorRevision":-1},"m_UIModuleDependencies":[""]} from CS2M (UIModuleAsset:29befc28a5870feaf7cbf1dd298d80f7 $133 [assetdb://user/mods/CS2M/CS2M.mjs])

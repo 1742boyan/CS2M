@@ -5,9 +5,6 @@ import mod from "../../mod.json";
 import {JoinGameMenu} from "../screens/join-game-menu";
 import {HostGameMenu} from "../screens/host-game-menu";
 import {ErrorDialog} from "../screens/error-dialog";
-import {PlayerJoiningOverlay} from "../screens/player-joining-overlay";
-import {HostQueueManager} from "../screens/host-queue-manager";
-import {LocalJoinProgress} from "../screens/local-join-progress";
 
 export function showMultiplayerMenu() {
     trigger(mod.id, "ShowMultiplayerMenu");
@@ -25,9 +22,6 @@ export const MenuUIExtensions : ModuleRegistryExtend = (Component) => {
                     <JoinGameMenu></JoinGameMenu>
                     <HostGameMenu></HostGameMenu>
                     <ErrorDialog></ErrorDialog>
-                    <PlayerJoiningOverlay></PlayerJoiningOverlay>
-                    <HostQueueManager></HostQueueManager>
-                    <LocalJoinProgress></LocalJoinProgress>
                 </>;
         }
         return (
