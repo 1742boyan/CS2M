@@ -160,6 +160,7 @@ namespace CS2M.Networking
             PlayerConnectedEvent?.Invoke(player);
 
             JoinQueue.Enqueue(player);
+            CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
             ProcessQueue();
         }
 
@@ -175,6 +176,7 @@ namespace CS2M.Networking
                 if (JoinQueue.Contains(player))
                 {
                     JoinQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peer.Id));
+                    CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
                 }
                 
                 if (JoiningPlayer != null && JoiningPlayer.Connection.Id == peer.Id)
@@ -192,6 +194,7 @@ namespace CS2M.Networking
             if (JoinQueue.Count > 0 && AutoApproveJoins)
             {
                 var player = JoinQueue.Dequeue();
+                CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
                 ApprovePlayer(player);
             }
         }
@@ -204,6 +207,7 @@ namespace CS2M.Networking
                 // Remove from queue in case it wasn't dequeued yet
                 var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
                 JoinQueue = newQueue;
+                CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
                 ApprovePlayer(player);
             }
         }
@@ -215,6 +219,7 @@ namespace CS2M.Networking
             {
                 var newQueue = new Queue<RemotePlayer>(JoinQueue.Where(p => p.Connection.Id != peerId));
                 JoinQueue = newQueue;
+                CS2M.UI.UISystem.Instance?.RefreshJoinQueue();
                 SendToClient(player, new JoinApprovalCommand { Approved = false });
                 player.Connection.Disconnect();
             }

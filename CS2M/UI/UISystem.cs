@@ -38,6 +38,12 @@ namespace CS2M.UI
         private ValueBinding<string> _username;
         private ValueBinding<bool> _isSteamMode;
 
+        private ValueBinding<bool> _isPlayerJoining;
+        private ValueBinding<string> _joiningUsername;
+        private ValueBinding<int> _queueLength;
+        private ValueBinding<List<string>> _joinQueue;
+        private ValueBinding<bool> _autoApproveJoins;
+
         private readonly Stopwatch _downloadTimer = new();
         private int _lastDownloadDone = 0;
 
@@ -110,6 +116,23 @@ namespace CS2M.UI
 
             AddBinding(new TriggerBinding(Mod.Name, "CloseErrorDialog", CloseErrorDialog));
             AddBinding(new TriggerBinding(Mod.Name, "OpenLogsFolder", OpenLogsFolder));
+
+            AddBinding(_isPlayerJoining = new ValueBinding<bool>(Mod.Name, "IsPlayerJoining", false));
+            AddBinding(_joiningUsername = new ValueBinding<string>(Mod.Name, "JoiningUsername", ""));
+            AddBinding(_queueLength = new ValueBinding<int>(Mod.Name, "QueueLength", 0));
+            AddBinding(_joinQueue = new ValueBinding<List<string>>(Mod.Name, "JoinQueue", new List<string>(), new ListWriter<string>()));
+            AddBinding(_autoApproveJoins = new ValueBinding<bool>(Mod.Name, "AutoApproveJoins", true));
+
+            AddBinding(new TriggerBinding<int>(Mod.Name, "ApproveJoin", peerId => NetworkInterface.Instance.ApprovePlayer(peerId)));
+            AddBinding(new TriggerBinding<int>(Mod.Name, "DenyJoin", peerId => NetworkInterface.Instance.DenyPlayer(peerId)));
+            AddBinding(new TriggerBinding(Mod.Name, "KickJoiningPlayer", () => NetworkInterface.Instance.KickJoiningPlayer()));
+            AddBinding(new TriggerBinding<bool>(Mod.Name, "SetAutoApproveJoins", val => 
+            {
+                NetworkInterface.Instance.AutoApproveJoins = val;
+                _autoApproveJoins.Update(val);
+                NetworkInterface.Instance.ProcessQueue();
+            }));
+            AddBinding(new TriggerBinding(Mod.Name, "CancelJoin", () => NetworkInterface.Instance.LocalPlayer.Inactive()));
 
             RegisterChatPanelBindings();
 
@@ -241,6 +264,26 @@ namespace CS2M.UI
             {
                 Application.OpenURL("file://" + Application.persistentDataPath);
             }
+        }
+        public void SetPlayerJoiningStatus(bool isJoining, string username = "", int queueLength = 0)
+        {
+            _isPlayerJoining.Update(isJoining);
+            _joiningUsername.Update(username ?? "");
+            _queueLength.Update(queueLength);
+        }
+
+        private void UpdateJoinQueueUI()
+        {
+            var list = NetworkInterface.Instance.JoinQueue
+                .Select(p => $"{p.Connection.Id}:{p.Username}")
+                .ToList();
+            _joinQueue.Update(list);
+            _queueLength.Update(list.Count);
+        }
+
+        public void RefreshJoinQueue()
+        {
+            UpdateJoinQueueUI();
         }
     }
 }
