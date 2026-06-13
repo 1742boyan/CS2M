@@ -1,43 +1,21 @@
-[2026-06-13 16:12:47,309] [INFO]  Bootstrapping cohtmlUISystem
-[2026-06-13 16:12:47,901] [INFO]  Coherent Renoir library initialized!
-[2026-06-13 16:12:47,901] [INFO]  No default file writer given. Falling back on the default on.
-[2026-06-13 16:12:47,902] [INFO]  Initializing COHTML ver. 1.64.0.7
-[2026-06-13 16:12:47,903] [INFO]  Virtual allocator was not provided, falling back to the default V8 page allocator
-[2026-06-13 16:12:47,903] [INFO]  COHTML library initialized!
-[2026-06-13 16:12:48,055] [INFO]  View Id: 0 created.
-[2026-06-13 16:12:48,063] [INFO]  UIView 0 url set to assetdb://gameui/index.html
-[2026-06-13 16:12:49,038] [INFO]  Initialized rendering resources!
-[2026-06-13 16:12:49,038] [INFO]  New render target set 1920x1080
-[2026-06-13 16:12:49,306] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:49,306] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:49,307] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:49,308] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:49,308] [INFO]  Unsupported CSS property detected: word-wrap
-[2026-06-13 16:12:49,308] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:49,308] [INFO]  Unsupported CSS property detected: gap
-[2026-06-13 16:12:53,291] [INFO]  Unsupported CSS property detected: shape-rendering
-[2026-06-13 16:12:53,291] [WARN]  Unable to parse declaration: image-rendering - optimizeQuality
-[2026-06-13 16:12:53,292] [INFO]  Unsupported CSS property detected: text-rendering
-[2026-06-13 16:13:10,262] [WARN]  Unable to parse declaration: width - max-content
-[2026-06-13 16:14:57,400] [ERROR]  Cannot register second child 'AutoNavigationScope:356997'. This focus node can only host a single child!
-Registered key: AutoNavigationScope:85909
-<-- SUB_SCREEN_CONTENT_KEY:273697 
- While executing JS :15:23
-Colossal.UI.CoLogHandler:WriteLog(Severity, String, UInt64)
-cohtml.Net.LogHandler:SwigDirectorWriteLog(Int32, String, UInt64, IntPtr)
-cohtml.Net.cohtmlNativePINVOKE:View_MouseEvent(HandleRef, HandleRef)
-cohtml.Net.View:MouseEvent(IMouseEventData)
-Colossal.UI.UIInputSystem:DispatchInputEvents(UIView, Boolean, Boolean, InputEventType)
-Colossal.UI.UIInputSystem:DispatchInputEvents(Boolean)
-Game.SceneFlow.GameManager:Update()
-[2026-06-13 16:15:00,170] [ERROR]  Attempted to unregister mismatching focus key 'AutoNavigationScope:356997'!
-Registered key: null
-<-- SUB_SCREEN_CONTENT_KEY:273697 
- While executing JS :15:23
-Colossal.UI.CoLogHandler:WriteLog(Severity, String, UInt64)
-cohtml.Net.LogHandler:SwigDirectorWriteLog(Int32, String, UInt64, IntPtr)
-cohtml.Net.cohtmlNativePINVOKE:View_MouseEvent(HandleRef, HandleRef)
-cohtml.Net.View:MouseEvent(IMouseEventData)
-Colossal.UI.UIInputSystem:DispatchInputEvents(UIView, Boolean, Boolean, InputEventType)
-Colossal.UI.UIInputSystem:DispatchInputEvents(Boolean)
-Game.SceneFlow.GameManager:Update()
+[2026-06-13 16:43:21,621] [INFO]  Bootstrapping cohtmlUISystem
+[2026-06-13 16:43:22,556] [INFO]  Coherent Renoir library initialized!
+[2026-06-13 16:43:22,556] [INFO]  No default file writer given. Falling back on the default on.
+[2026-06-13 16:43:22,556] [INFO]  Initializing COHTML ver. 1.64.0.7
+[2026-06-13 16:43:22,573] [INFO]  Virtual allocator was not provided, falling back to the default V8 page allocator
+[2026-06-13 16:43:22,583] [INFO]  COHTML library initialized!
+[2026-06-13 16:43:23,128] [INFO]  View Id: 0 created.
+[2026-06-13 16:43:23,142] [INFO]  UIView 0 url set to assetdb://gameui/index.html
+[2026-06-13 16:43:23,609] [INFO]  Initialized rendering resources!
+[2026-06-13 16:43:23,610] [INFO]  New render target set 1920x1080
+[2026-06-13 16:43:24,199] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:24,199] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:24,200] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:24,200] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:24,201] [INFO]  Unsupported CSS property detected: word-wrap
+[2026-06-13 16:43:24,201] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:24,201] [INFO]  Unsupported CSS property detected: gap
+[2026-06-13 16:43:28,149] [INFO]  Unsupported CSS property detected: shape-rendering
+[2026-06-13 16:43:28,150] [WARN]  Unable to parse declaration: image-rendering - optimizeQuality
+[2026-06-13 16:43:28,152] [INFO]  Unsupported CSS property detected: text-rendering
+[2026-06-13 16:43:56,664] [WARN]  Unable to parse declaration: width - max-content

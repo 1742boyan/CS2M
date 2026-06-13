@@ -17,7 +17,7 @@ export const HostQueueManager = () => {
 
     return (
         <div style={{
-            position: "absolute", top: "20px", right: "20px",
+            position: "absolute", top: "20px", left: "20px",
             backgroundColor: "rgba(20,20,20,0.9)", border: "1px solid #555",
             borderRadius: "8px", padding: "15px", minWidth: "300px",
             zIndex: 9995, pointerEvents: "auto", display: "flex", flexDirection: "column", gap: "10px"

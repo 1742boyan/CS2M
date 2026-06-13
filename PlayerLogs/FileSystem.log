@@ -1,6 +1,6 @@
-[2026-06-13 16:12:18,589] [INFO]  Wiping temp data
-[2026-06-13 16:12:22,134] [INFO]  Loaded Unity AssetDatabaseResources in 3306.0536ms
-[2026-06-13 16:12:45,911] [INFO]  Storage info:
+[2026-06-13 16:42:49,778] [INFO]  Wiping temp data
+[2026-06-13 16:42:57,271] [INFO]  Loaded Unity AssetDatabaseResources in 6848.9195ms
+[2026-06-13 16:43:19,626] [INFO]  Storage info:
   User data path: C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II
   Game data path: D:/Steam/steamapps/common/Cities Skylines II/Cities2_Data
   Temp data path: C:/Users/teodo/AppData/Local/Temp/Colossal Order/Cities Skylines II
@@ -13,12 +13,12 @@
   Special path MapData: **********************
   Special path CinematicCameraAsset: *********************************
 
-[2026-06-13 16:12:45,916] [INFO]  Registered 'SteamCloud' database
-[2026-06-13 16:12:45,928] [INFO]  Registered 'User' database
-[2026-06-13 16:12:45,936] [INFO]  Registered 'Game' database
-[2026-06-13 16:12:46,599] [INFO]  MipBias 0 active
-[2026-06-13 16:12:46,856] [INFO]  Watcher starting at 'C:\Users\teodo\AppData\LocalLow\Colossal Order\Cities Skylines II' with .cok, .cop, .zip, .png, .tif, .tiff, .jpg, .jpeg, .SaveGameMetadata, .SaveGameData, .cds, .MapMetadata, .MapData, .cdm, .CinematicCamera
-[2026-06-13 16:13:00,136] [INFO]  Registered 'ParadoxMods' database
-[2026-06-13 16:13:00,641] [INFO]  OnActivePlaysetChanged performed in 0.5001661s
-[2026-06-13 16:13:04,011] [INFO]  Watcher starting at 'C:\Users\teodo\AppData\LocalLow\Colossal Order\Cities Skylines II\.packages' with .cok, .cop, .zip
-[2026-06-13 16:13:04,639] [INFO]  Log 'I18NEverywhere.I18NEverywhere' opened at C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II/Logs/I18NEverywhere.I18NEverywhere.log with effectivenessLevel of INFO.
+[2026-06-13 16:43:19,635] [INFO]  Registered 'SteamCloud' database
+[2026-06-13 16:43:19,647] [INFO]  Registered 'User' database
+[2026-06-13 16:43:19,656] [INFO]  Registered 'Game' database
+[2026-06-13 16:43:20,289] [INFO]  MipBias 0 active
+[2026-06-13 16:43:20,983] [INFO]  Watcher starting at 'C:\Users\teodo\AppData\LocalLow\Colossal Order\Cities Skylines II' with .cok, .cop, .zip, .png, .tif, .tiff, .jpg, .jpeg, .SaveGameMetadata, .SaveGameData, .cds, .MapMetadata, .MapData, .cdm, .CinematicCamera
+[2026-06-13 16:43:44,843] [INFO]  Registered 'ParadoxMods' database
+[2026-06-13 16:43:45,349] [INFO]  OnActivePlaysetChanged performed in 0.5011144s
+[2026-06-13 16:43:49,044] [INFO]  Watcher starting at 'C:\Users\teodo\AppData\LocalLow\Colossal Order\Cities Skylines II\.packages' with .cok, .cop, .zip
+[2026-06-13 16:43:49,704] [INFO]  Log 'I18NEverywhere.I18NEverywhere' opened at C:/Users/teodo/AppData/LocalLow/Colossal Order/Cities Skylines II/Logs/I18NEverywhere.I18NEverywhere.log with effectivenessLevel of INFO.

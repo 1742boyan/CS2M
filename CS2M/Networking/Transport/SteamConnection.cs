@@ -24,7 +24,7 @@ namespace CS2M.Networking.Transport
 
         public int GetMaxSinglePacketSize()
         {
-            return 1024;
+            return 256000;
         }
     }
 }

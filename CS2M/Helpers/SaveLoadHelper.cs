@@ -300,10 +300,9 @@ namespace CS2M.Helpers
     {
         public static bool OverrideAssetData;
 
-        // ReSharper disable once InconsistentNaming
-        public static bool Prefix(ref AsyncReadDescriptor __result)
+        public static bool Prefix(AssetData __instance, ref AsyncReadDescriptor __result)
         {
-            if (!OverrideAssetData)
+            if (!OverrideAssetData || __instance is not SaveWrapper)
             {
                 return true;
             }
