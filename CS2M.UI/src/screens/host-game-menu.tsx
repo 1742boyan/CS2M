@@ -1,11 +1,11 @@
-import {getModule} from "cs2/modding";
-import {bindValue, trigger, useValue} from "cs2/api";
+import { getModule } from "cs2/modding";
+import { bindValue, trigger, useValue } from "cs2/api";
 import mod from "../../mod.json";
-import {FocusBoundary, NavigationScope} from "cs2/input";
-import {useLocalization} from "cs2/l10n";
-import {Scrollable} from "cs2/ui";
-import {InputField} from "../util/input-field";
-import {setVal} from "../api";
+import { FocusBoundary, NavigationScope } from "cs2/input";
+import { useLocalization } from "cs2/l10n";
+import { Scrollable } from "cs2/ui";
+import { InputField } from "../util/input-field";
+import { setVal } from "../api";
 
 export const hostMenuVisible = bindValue<boolean>(mod.id, 'HostMenuVisible', false);
 export const modSupport = bindValue<Array<any>>(mod.id, 'modSupport', []);
@@ -49,26 +49,26 @@ export const HostGameSettings = () => {
         <>
             <div className={GameOptionsCSS.mainRow}>
                 <div className={GameOptionsCSS.optionsColumn}>
-                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
-                            <span style={{color: "white"}}>Hosting Mode:</span>
-                            <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer"}}>
-                                {isSteamModeValue ? "Steam P2P" : "Direct IP"}
-                            </button>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+                        <span style={{ color: "white" }}>Hosting Mode:</span>
+                        <button disabled={!enabled} onClick={() => setBoolVal("SetIsSteamMode", !isSteamModeValue)} style={{ padding: "5px", backgroundColor: "rgba(0,0,0,0.5)", color: "white", border: "1px solid white", cursor: "pointer" }}>
+                            {isSteamModeValue ? "Steam P2P" : "Direct IP"}
+                        </button>
+                    </div>
+                    {isSteamModeValue ? (
+                        <div style={{ padding: "10px", marginBottom: "10px", backgroundColor: "rgba(0,0,0,0.5)", color: "white" }}>
+                            Host via Steam. Use the Steam Overlay (Shift+Tab) to invite friends.
                         </div>
-                        {isSteamModeValue ? (
-                            <div style={{padding: "10px", marginBottom: "10px", backgroundColor: "rgba(0,0,0,0.5)", color: "white"}}>
-                                Host via Steam. Use the Steam Overlay (Shift+Tab) to invite friends.
-                            </div>
-                        ) : (
-                            <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
-                                        onChange={(val: any) => {
-                                            setIntVal("SetHostPort", val)
-                                        }}></InputField>
-                        )}
-                        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px", padding: "10px", backgroundColor: "rgba(0,0,0,0.3)"}}>
-                            <span style={{color: "white"}}>Username (from Options):</span>
-                            <span style={{color: "white", fontWeight: "bold"}}>{usernameValue}</span>
-                        </div>
+                    ) : (
+                        <InputField key="port" label={"CS2M.UI.Port"} value={portValue} disabled={!enabled}
+                            onChange={(val: any) => {
+                                setIntVal("SetHostPort", val)
+                            }}></InputField>
+                    )}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", padding: "10px", backgroundColor: "rgba(0,0,0,0.3)" }}>
+                        <span style={{ color: "white" }}>Username (from Options):</span>
+                        <span style={{ color: "white", fontWeight: "bold" }}>{usernameValue}</span>
+                    </div>
                 </div>
                 <div className={GameOptionsCSS.infoColumn}>
 
@@ -95,7 +95,7 @@ export const HostGameMenu = () => {
 
     const enabled = status == "INACTIVE";
 
-    const {translate} = useLocalization();
+    const { translate } = useLocalization();
 
     const actions = {};
 
@@ -121,7 +121,7 @@ export const HostGameMenu = () => {
                 color = "orange";
                 break;
         }
-        details.push(<div style={{color: color}}><Field label={support.name}>{support_str}</Field></div>);
+        details.push(<div style={{ color: color }}><Field label={support.name}>{support_str}</Field></div>);
     }
 
     let footer;
@@ -136,15 +136,15 @@ export const HostGameMenu = () => {
         content = (
             <SubScreen title={translate("CS2M.UI.Multiplayer")} onClose={hideHostGame}>
                 <div className={LoadGameScreenCSS.content}>
-                        <div className={LoadGameScreenCSS.stepContainer}>
-                            <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
-                                <div className={DetailSectionCSS.title}>{translate("CS2M.UI.HostGame")}</div>
-                                <HostGameSettings></HostGameSettings>
-                            </div>
+                    <div className={LoadGameScreenCSS.stepContainer}>
+                        <div className={SaveListCSS.saveList + " " + LoadGameScreenCSS.step}>
+                            <div className={DetailSectionCSS.title}>{translate("CS2M.UI.HostGame")}</div>
+                            <HostGameSettings></HostGameSettings>
                         </div>
-                        <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
-                                       footer={footer}>
-                        </DetailSection>
+                    </div>
+                    <DetailSection title={detailsTitle} className={LoadGameScreenCSS.detail} content={details}
+                        footer={footer}>
+                    </DetailSection>
                 </div>
             </SubScreen>
         );

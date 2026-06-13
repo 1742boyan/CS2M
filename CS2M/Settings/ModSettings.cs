@@ -28,9 +28,18 @@ namespace CS2M.Settings
         [SettingsUISetter(typeof(ModSettings), nameof(OnSetUsername))]
         public string Username { get; set; }
 
+        [SettingsUISection(Section, GeneralSettings)]
+        [SettingsUISetter(typeof(ModSettings), nameof(OnSetAutoApproveJoins))]
+        public bool AutoApproveJoins { get; set; }
+
         public void OnSetUsername(string username)
         {
             UI.UISystem.Instance?.SetUsername(username);
+        }
+
+        public void OnSetAutoApproveJoins(bool autoApprove)
+        {
+            UI.UISystem.Instance?.SetAutoApproveJoins(autoApprove);
         }
 
         [SettingsUISection(Section, AdvancedSettings)]

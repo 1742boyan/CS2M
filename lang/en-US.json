@@ -8,6 +8,7 @@
   "Options.OPTION[CS2M.CS2M.Mod.ModSettings.ApiServerPort]": "API Server Port",
   "Options.OPTION_DESCRIPTION[CS2M.CS2M.Mod.ModSettings.LoggingLevel]": "Set the logging level of the CS2M mod. Note that levels Trace or Debug may impair performance.",
   "Options.OPTION[CS2M.CS2M.Mod.ModSettings.Username]": "Username",
+  "Options.OPTION[CS2M.CS2M.Mod.ModSettings.AutoApproveJoins]": "Auto-approve joins",
   "Options.OPTION_DESCRIPTION[CS2M.CS2M.Mod.ModSettings.Username]": "The username displayed to other players.",
   "Options.OPTION_DESCRIPTION[CS2M.CS2M.Mod.ModSettings.ApiServer]": "",
   "Options.OPTION_DESCRIPTION[CS2M.CS2M.Mod.ModSettings.ApiServerPort]": "",
