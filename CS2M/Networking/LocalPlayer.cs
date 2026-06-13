@@ -20,7 +20,7 @@ namespace CS2M.Networking
 {
     public class LocalPlayer : Player
     {
-        private SlicedPacketStream _packetStream;
+        private System.IO.MemoryStream _packetStream;
         private SaveLoadHelper _saveLoadHelper;
         private NetworkManager _networkManager;
         private UISystem _uiSystem;
@@ -227,7 +227,7 @@ namespace CS2M.Networking
 
             if (cmd.NewTransfer)
             {
-                _packetStream = new SlicedPacketStream(cmd.WorldSlice.Length);
+                _packetStream = new System.IO.MemoryStream();
             }
             else if (_packetStream == null)
             {
@@ -237,7 +237,7 @@ namespace CS2M.Networking
                 return;
             }
 
-            _packetStream.AppendSlice(cmd.WorldSlice);
+            _packetStream.Write(cmd.WorldSlice, 0, cmd.WorldSlice.Length);
             _uiSystem.SetLoadProgress((int)_packetStream.Length, cmd.RemainingBytes);
 
             if (cmd.RemainingBytes == 0)
