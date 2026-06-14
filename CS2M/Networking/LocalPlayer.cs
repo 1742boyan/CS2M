@@ -33,6 +33,7 @@ namespace CS2M.Networking
 
         public bool GetServerInfo(ConnectionConfig connectionConfig)
         {
+            Log.Trace($"LocalPlayer: GetServerInfo with HostAddress={connectionConfig.HostAddress}");
             if (PlayerStatus != PlayerStatus.INACTIVE)
             {
                 return false;
@@ -317,6 +318,7 @@ namespace CS2M.Networking
         // PLAYING -> INACTIVE
         public bool Inactive()
         {
+            Log.Trace("LocalPlayer: Setting player to Inactive");
             // if (PlayerStatus != PlayerStatus.PLAYING)
             // {
             //     return false;

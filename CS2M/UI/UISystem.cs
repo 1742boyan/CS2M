@@ -251,6 +251,12 @@ namespace CS2M.UI
             _showErrorDialog.Update(true);
         }
 
+        public void ShowError(string message)
+        {
+            _joinErrorMessage.Update(new List<string> { message });
+            _showErrorDialog.Update(true);
+        }
+
         public void SetUsername(string username)
         {
             _username?.Update(username);

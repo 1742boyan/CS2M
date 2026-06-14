@@ -40,15 +40,18 @@ namespace CS2M.Networking
 
         public void HandleConnect()
         {
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) HandleConnect");
         }
 
         public void Disconnect()
         {
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) Disconnect called");
             Connection.Disconnect();
         }
 
         public void HandleDisconnect()
         {
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) HandleDisconnect");
         }
     }
 }

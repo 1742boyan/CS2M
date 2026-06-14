@@ -163,28 +163,49 @@ namespace CS2M.Networking.Transport
 
         public void SendToAllClients(CommandBase message)
         {
-            byte[] data = CommandInternal.Instance.Serialize(message);
-            foreach (var client in _connectedClients)
+            try
             {
-                SendData(client, data);
+                byte[] data = CommandInternal.Instance.Serialize(message);
+                foreach (var client in _connectedClients)
+                {
+                    SendData(client, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("SteamworksTransport: Failed to SendToAllClients", ex);
             }
         }
 
         public void SendToClient(INetworkConnection peer, CommandBase message)
         {
-            if (peer.NativePeer is HSteamNetConnection connection)
+            try
             {
-                byte[] data = CommandInternal.Instance.Serialize(message);
-                SendData(connection, data);
+                if (peer.NativePeer is HSteamNetConnection connection)
+                {
+                    byte[] data = CommandInternal.Instance.Serialize(message);
+                    SendData(connection, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"SteamworksTransport: Failed to SendToClient {peer.Id}", ex);
             }
         }
 
         public void SendToServer(CommandBase message)
         {
-            if (_serverConnection.m_HSteamNetConnection != 0)
+            try
             {
-                byte[] data = CommandInternal.Instance.Serialize(message);
-                SendData(_serverConnection, data);
+                if (_serverConnection.m_HSteamNetConnection != 0)
+                {
+                    byte[] data = CommandInternal.Instance.Serialize(message);
+                    SendData(_serverConnection, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("SteamworksTransport: Failed to SendToServer", ex);
             }
         }
 
@@ -232,6 +253,7 @@ namespace CS2M.Networking.Transport
                     break;
 
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+                    Log.Debug($"SteamworksTransport: Connection established {connection.m_HSteamNetConnection}");
                     if (connection == _serverConnection)
                     {
                         ClientConnectSuccessfulEvent?.Invoke();
@@ -245,6 +267,7 @@ namespace CS2M.Networking.Transport
 
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
+                    Log.Warn($"SteamworksTransport: Connection closed or problem detected for {connection.m_HSteamNetConnection}. Info: {info.m_szEndDebug}");
                     SteamNetworkingSockets.CloseConnection(connection, 0, "Closed", false);
                     
                     if (connection == _serverConnection)

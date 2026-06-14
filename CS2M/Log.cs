@@ -1,4 +1,4 @@
-﻿using Colossal.Logging;
+using Colossal.Logging;
 using System;
 using LiteNetLib;
 
@@ -46,16 +46,19 @@ namespace CS2M
             Logger.SetLogStackTrace(true);
             Logger.Error(message);
             Logger.SetLogStackTrace(false);
+            CS2M.UI.UISystem.Instance?.ShowError(message);
         }
 
         public static void Error(string message)
         {
             Logger.Error(message);
+            CS2M.UI.UISystem.Instance?.ShowError(message);
         }
 
         public static void Error(string message, Exception ex)
         {
             Logger.Error(ex, message);
+            CS2M.UI.UISystem.Instance?.ShowError($"{message}\n{ex.Message}");
         }
 
         public static void Warn(string message)

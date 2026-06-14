@@ -203,8 +203,15 @@ namespace CS2M.Networking.Transport
 
         private void ListenerOnNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
-            CommandBase command = CommandInternal.Instance.Deserialize(reader.GetRemainingBytes());
-            NetworkReceiveEvent?.Invoke(new LiteNetConnection(peer), command);
+            try
+            {
+                CommandBase command = CommandInternal.Instance.Deserialize(reader.GetRemainingBytes());
+                NetworkReceiveEvent?.Invoke(new LiteNetConnection(peer), command);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"LiteNetLibTransport: Failed to deserialize or process packet from {peer.Id}", ex);
+            }
         }
 
         private void ListenerOnNetworkErrorEvent(IPEndPoint endpoint, SocketError socketError)
@@ -215,6 +222,7 @@ namespace CS2M.Networking.Transport
 
         private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
+            Log.Debug($"LiteNetLibTransport: Peer connected {peer.Id}");
             if (_timeout != null)
             {
                 _timeout.Enabled = false;
@@ -224,6 +232,7 @@ namespace CS2M.Networking.Transport
 
         private void ListenerOnPeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
+            Log.Warn($"LiteNetLibTransport: Peer disconnected {peer.Id}. Reason: {disconnectInfo.Reason}");
             PeerDisconnectedEvent?.Invoke(new LiteNetConnection(peer), disconnectInfo.Reason.ToString());
         }
 
