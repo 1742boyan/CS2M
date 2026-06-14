@@ -61,6 +61,7 @@ namespace CS2M
                 ApiCommand.Instance = new ApiCommand();
 
                 NetDebug.Logger = new NetLogWrapper();
+                Log.OnErrorUI = msg => UISystem.Instance?.ShowError(msg);
 
                 ModSupport.Instance.Init();
                 Networking.Steam.SteamInviteHandler.Instance.Initialize();
