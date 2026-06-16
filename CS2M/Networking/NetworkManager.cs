@@ -94,29 +94,58 @@ namespace CS2M.Networking
 
             if (command is PreconditionsCheckCommand preconditionsCheckCommand)
             {
-                if (peer.NativePeer is NetPeer netPeer)
+                try
                 {
-                    ((PreconditionsCheckHandler)handler).HandleOnServer(preconditionsCheckCommand, netPeer);
+                    ((PreconditionsCheckHandler)handler).HandleOnServer(preconditionsCheckCommand, peer);
                 }
-                // TODO: Handle precondition check on server for Steamworks
+                catch (Exception ex)
+                {
+                    Log.Error($"NetworkManager: Error handling PreconditionsCheckCommand", ex);
+                }
+                return;
+            }
+
+            if (command is ClientJoinedCommand clientJoinedCommand)
+            {
+                try
+                {
+                    ((ClientJoinedHandler)handler).HandleOnServer(clientJoinedCommand, peer);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"NetworkManager: Error handling ClientJoinedCommand", ex);
+                }
                 return;
             }
 
             if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
-                bool isConnected = false;
-                if (peer.NativePeer is NetPeer netPeer)
-                {
-                    isConnected = NetworkInterface.Instance.IsPeerConnected(netPeer);
-                }
-
+                bool isConnected = NetworkInterface.Instance.IsPeerConnected(peer);
                 if (!isConnected)
                 {
                     return;
                 }
             }
 
-            handler.Parse(command);
+            try
+            {
+                handler.Parse(command);
+
+                if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER && handler.RelayOnServer)
+                {
+                    foreach (var p in NetworkInterface.Instance.PlayerListConnected)
+                    {
+                        if (p is RemotePlayer remotePlayer && remotePlayer.Connection.Id != peer.Id)
+                        {
+                            CommandInternal.Instance.SendToClient(remotePlayer, command);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"NetworkManager: Error handling command {command.GetType()}", ex);
+            }
         }
 
         private void ListenerOnPeerConnectedEvent(INetworkConnection peer)
@@ -145,10 +174,8 @@ namespace CS2M.Networking
             else if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
                 MultiplayerChirpSystem.Instance?.CreateCustomChirp("A player disconnected.");
-                if (peer.NativePeer is NetPeer netPeer)
-                {
-                    NetworkInterface.Instance.GetPlayerByPeer(netPeer)?.HandleDisconnect();
-                }
+                NetworkInterface.Instance.GetPlayerByPeer(peer)?.HandleDisconnect();
+                NetworkInterface.Instance.PlayerDisconnected(peer);
             }
         }
 
@@ -160,29 +187,63 @@ namespace CS2M.Networking
 
         public void ProcessEvents()
         {
-            _transport?.ProcessEvents();
-            _apiServer?.KeepAlive(_connectionConfig);
+            try
+            {
+                _transport?.ProcessEvents();
+                _apiServer?.KeepAlive(_connectionConfig);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("NetworkManager: Error processing events", ex);
+            }
         }
 
         public void SendToAllClients(CommandBase message)
         {
-            _transport?.SendToAllClients(message);
+            try
+            {
+                _transport?.SendToAllClients(message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("NetworkManager: Failed to send to all clients", ex);
+            }
         }
 
-        public void SendToClient(NetPeer peer, CommandBase message)
+        public void SendToClient(INetworkConnection peer, CommandBase message)
         {
-            // Backward compatibility for LiteNetLib peers
-            _transport?.SendToClient(new LiteNetConnection(peer), message);
+            try
+            {
+                _transport?.SendToClient(peer, message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"NetworkManager: Failed to send to client {peer.Id}", ex);
+            }
         }
 
         public void SendToServer(CommandBase message)
         {
-            _transport?.SendToServer(message);
+            try
+            {
+                _transport?.SendToServer(message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("NetworkManager: Failed to send to server", ex);
+            }
         }
 
         public void SendToApiServer(ApiCommandBase message)
         {
-            _apiServer?.SendCommand(message);
+            try
+            {
+                _apiServer?.SendCommand(message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("NetworkManager: Failed to send to API server", ex);
+            }
         }
 
         public bool StartServer(ConnectionConfig connectionConfig)

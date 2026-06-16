@@ -27,7 +27,15 @@ namespace CS2M.BaseGame.Systems
 
         protected override void OnUpdate()
         {
-            
+            try
+            {
+                // Trace if needed, although currently empty
+                // Log.Trace("BuildingSystem OnUpdate");
+            }
+            catch (System.Exception ex)
+            {
+                Log.Error("BuildingSystem: Error in OnUpdate", ex);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using CS2M.API.Commands;
 using CS2M.API.Networking;
 using CS2M.Commands.Data.Internal;
@@ -6,6 +6,7 @@ using CS2M.Mods;
 using CS2M.Networking;
 using CS2M.Util;
 using LiteNetLib;
+using CS2M.Networking.Transport;
 
 namespace CS2M.Commands.Handler.Internal
 {
@@ -20,14 +21,14 @@ namespace CS2M.Commands.Handler.Internal
         {
         }
 
-        public void HandleOnServer(PreconditionsCheckCommand command, NetPeer peer)
+        public void HandleOnServer(PreconditionsCheckCommand command, INetworkConnection peer)
         {
             Log.Debug($"Received Preconditions Check [PeerId: {peer.Id}]");
 
             PreconditionsUtil.Result result = PreconditionsUtil.CheckPreconditions(command);
 
             // Check the client username to see if anyone on the server already have a username
-            if (NetworkInterface.Instance.PlayerListConnected.Any(p => p.Username.Equals(command.Username)))
+            if (NetworkInterface.Instance.PlayerListConnected.Any(p => string.Equals(p.Username, command.Username)))
             {
                 Log.Debug($"[Preconditions Check] Username '{command.Username}' is already connected.");
                 result.Errors |= PreconditionsUtil.Errors.USERNAME_NOT_AVAILABLE;
@@ -45,10 +46,15 @@ namespace CS2M.Commands.Handler.Internal
 
             if (result.Errors == PreconditionsUtil.Errors.NONE)
             {
-                NetworkInterface.Instance.LocalPlayer.SendToClient(peer, new PreconditionsSuccessCommand());
+                NetworkInterface.Instance.LocalPlayer.SendToClient(peer, new PreconditionsSuccessCommand()
+                {
+                    AssignedPlayerId = (int)peer.Id
+                });
 
                 // Add the new player as a connected player
-                NetworkInterface.Instance.PlayerConnected(new RemotePlayer(peer, command.Username, PlayerType.CLIENT));
+                var remotePlayer = new RemotePlayer(peer, command.Username, PlayerType.CLIENT);
+                remotePlayer.PlayerId = (int)peer.Id;
+                NetworkInterface.Instance.PlayerConnected(remotePlayer);
             }
             else
             {

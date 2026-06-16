@@ -21,5 +21,10 @@ namespace CS2M.Networking.Transport
         }
 
         public object NativePeer => _peer;
+
+        public int GetMaxSinglePacketSize()
+        {
+            return _peer.GetMaxSinglePacketSize(DeliveryMethod.ReliableOrdered);
+        }
     }
 }

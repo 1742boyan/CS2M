@@ -41,48 +41,66 @@ namespace CS2M
         /// <param name="updateSystem">Game update system.</param>
         public void OnLoad(UpdateSystem updateSystem)
         {
-            // Set instance reference.
-            Instance = this;
-            Log.Info($"Loading {Name} version {Assembly.GetExecutingAssembly().GetName().Version}");
+            try
+            {
+                // Set instance reference.
+                Instance = this;
+                Log.Info($"Loading {Name} version {Assembly.GetExecutingAssembly().GetName().Version}");
 
-            // Register mod settings to game options UI.
-            Log.Info("Loading Mod Settings");
-            Settings = new ModSettings(this);
-            Settings.RegisterInOptionsUI();
+                // Register mod settings to game options UI.
+                Log.Info("Loading Mod Settings");
+                Settings = new ModSettings(this);
+                Settings.RegisterInOptionsUI();
 
-            // Load saved settings.
-            AssetDatabase.global.LoadSettings(Name, Settings, new ModSettings(this));
-            Settings.OnSetLoggingLevel(Settings.LoggingLevel);
-            Log.Info("Configured and initialised mod settings");
+                // Load saved settings.
+                AssetDatabase.global.LoadSettings(Name, Settings, new ModSettings(this));
+                Settings.OnSetLoggingLevel(Settings.LoggingLevel);
+                Log.Info("Configured and initialised mod settings");
 
-            CommandInternal.Instance = new CommandInternal();
-            ApiCommand.Instance = new ApiCommand();
+                NetworkInterface.Instance.AutoApproveJoins = Settings.AutoApproveJoins;
 
-            NetDebug.Logger = new NetLogWrapper();
+                CommandInternal.Instance = new CommandInternal();
+                ApiCommand.Instance = new ApiCommand();
 
-            ModSupport.Instance.Init();
+                NetDebug.Logger = new NetLogWrapper();
+                Log.OnErrorUI = msg => UISystem.Instance?.ShowError(msg);
 
-            // Patch methods
-            var harmony = new Harmony(HarmonyPatchID);
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+                ModSupport.Instance.Init();
+                Networking.Steam.SteamInviteHandler.Instance.Initialize();
 
-            // Set up systems
-            updateSystem.UpdateBefore<NetworkingSystem>(SystemUpdatePhase.PreSimulation);
-            updateSystem.UpdateAt<UISystem>(SystemUpdatePhase.UIUpdate);
-            updateSystem.UpdateAt<CS2M.Networking.Chirper.MultiplayerChirpSystem>(SystemUpdatePhase.UIUpdate);
-            Log.Info("Loading complete");
+                // Patch methods
+                var harmony = new Harmony(HarmonyPatchID);
+                harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+                // Set up systems
+                updateSystem.UpdateBefore<NetworkingSystem>(SystemUpdatePhase.PreSimulation);
+                updateSystem.UpdateAt<UISystem>(SystemUpdatePhase.UIUpdate);
+                updateSystem.UpdateAt<CS2M.Networking.Chirper.MultiplayerChirpSystem>(SystemUpdatePhase.UIUpdate);
+                Log.Info("Loading complete");
+            }
+            catch (System.Exception ex)
+            {
+                Log.Error("Failed to load CS2M Mod", ex);
+            }
         }
 
         public void OnDispose()
         {
-            new Harmony(HarmonyPatchID).UnpatchAll(HarmonyPatchID);
-
-            ModSupport.Instance.DestroyConnections();
-
-            if (Settings != null)
+            try
             {
-                Settings.UnregisterInOptionsUI();
-                Settings = null;
+                new Harmony(HarmonyPatchID).UnpatchAll(HarmonyPatchID);
+
+                ModSupport.Instance.DestroyConnections();
+
+                if (Settings != null)
+                {
+                    Settings.UnregisterInOptionsUI();
+                    Settings = null;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Error("Failed to dispose CS2M Mod", ex);
             }
         }
     }

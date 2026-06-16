@@ -8,6 +8,7 @@ namespace CS2M.Commands.Handler.Internal
     {
         protected override void Handle(WorldTransferCommand command)
         {
+            Log.Trace($"WorldTransferHandler: Received slice, NewTransfer={command.NewTransfer}, RemainingBytes={command.RemainingBytes}");
             NetworkInterface.Instance.LocalPlayer.SliceReceived(command);
         }
     }

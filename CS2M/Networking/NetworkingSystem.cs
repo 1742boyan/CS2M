@@ -1,4 +1,4 @@
-﻿using Unity.Entities;
+using Unity.Entities;
 
 namespace CS2M.Networking
 {
@@ -16,6 +16,24 @@ namespace CS2M.Networking
         protected override void OnUpdate()
         {
             NetworkInterface.Instance.OnUpdate();
+
+            if (NetworkInterface.Instance.JoiningPlayer != null)
+            {
+                var toolSystem = World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<Game.Tools.ToolSystem>();
+                var defaultTool = World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<Game.Tools.DefaultToolSystem>();
+                if (toolSystem != null && defaultTool != null && toolSystem.activeTool != defaultTool)
+                {
+                    toolSystem.activeTool = defaultTool;
+                }
+            }
+
+            CS2M.UI.UISystem.Instance?.UpdatePlayerMouseData();
+        }
+
+        protected override void OnDestroy()
+        {
+            NetworkInterface.Instance.LocalPlayer?.Inactive();
+            base.OnDestroy();
         }
     }
 }

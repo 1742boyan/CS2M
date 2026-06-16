@@ -1,15 +1,16 @@
-﻿using CS2M.API.Networking;
+using CS2M.API.Networking;
 using LiteNetLib;
+using CS2M.Networking.Transport;
 
 namespace CS2M.Networking
 {
     public class RemotePlayer : Player
     {
-        public NetPeer NetPeer { get; }
+        public INetworkConnection Connection { get; }
 
-        public RemotePlayer(NetPeer peer, string username, PlayerType playerType) : base()
+        public RemotePlayer(INetworkConnection peer, string username, PlayerType playerType) : base()
         {
-            NetPeer = peer;
+            Connection = peer;
             Username = username;
             PlayerType = playerType;
             PlayerStatusChangedEvent += PlayerStatusChanged;
@@ -18,7 +19,7 @@ namespace CS2M.Networking
 
         public RemotePlayer(string username, PlayerType playerType) : base()
         {
-            NetPeer = null;
+            Connection = null;
             Username = username;
             PlayerType = playerType;
             PlayerStatusChangedEvent += PlayerStatusChanged;
@@ -39,15 +40,18 @@ namespace CS2M.Networking
 
         public void HandleConnect()
         {
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) HandleConnect");
         }
 
         public void Disconnect()
         {
-            NetPeer.Disconnect();
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) Disconnect called");
+            Connection.Disconnect();
         }
 
         public void HandleDisconnect()
         {
+            Log.Trace($"RemotePlayer: {Username} ({PlayerId}) HandleDisconnect");
         }
     }
 }

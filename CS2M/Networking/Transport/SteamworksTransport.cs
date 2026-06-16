@@ -36,6 +36,21 @@ namespace CS2M.Networking.Transport
         public bool InitConnect(ConnectionConfig connectionConfig)
         {
             _connectionConfig = connectionConfig;
+            
+            // Uncap Steam Datagram Relay (SDR) limit from 1Mbps to 2Gbps to allow instant map transfers
+            int sendRateMax = 2000000000;
+            IntPtr pSendRateMax = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(int));
+            System.Runtime.InteropServices.Marshal.WriteInt32(pSendRateMax, sendRateMax);
+            SteamNetworkingUtils.SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendRateMax, ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global, IntPtr.Zero, ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32, pSendRateMax);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(pSendRateMax);
+
+            // Expand SDR buffer to 50MB to prevent k_EResultLimitExceeded and game freezing
+            int sendBufferSize = 52428800;
+            IntPtr pSendBufferSize = System.Runtime.InteropServices.Marshal.AllocHGlobal(sizeof(int));
+            System.Runtime.InteropServices.Marshal.WriteInt32(pSendBufferSize, sendBufferSize);
+            SteamNetworkingUtils.SetConfigValue(ESteamNetworkingConfigValue.k_ESteamNetworkingConfig_SendBufferSize, ESteamNetworkingConfigScope.k_ESteamNetworkingConfig_Global, IntPtr.Zero, ESteamNetworkingConfigDataType.k_ESteamNetworkingConfig_Int32, pSendBufferSize);
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(pSendBufferSize);
+
             // Steamworks doesn't require a generic "start" like LiteNetLib.
             return true;
         }
@@ -124,52 +139,78 @@ namespace CS2M.Networking.Transport
 
         private void PollMessages(HSteamNetConnection connection)
         {
-            IntPtr[] messages = new IntPtr[16];
-            int msgCount = SteamNetworkingSockets.ReceiveMessagesOnConnection(connection, messages, messages.Length);
-            for (int i = 0; i < msgCount; i++)
+            IntPtr[] messages = new IntPtr[256];
+            while (true)
             {
-                SteamNetworkingMessage_t netMessage = (SteamNetworkingMessage_t)System.Runtime.InteropServices.Marshal.PtrToStructure(messages[i], typeof(SteamNetworkingMessage_t));
-                byte[] payload = new byte[netMessage.m_cbSize];
-                System.Runtime.InteropServices.Marshal.Copy(netMessage.m_pData, payload, 0, netMessage.m_cbSize);
+                int msgCount = SteamNetworkingSockets.ReceiveMessagesOnConnection(connection, messages, messages.Length);
+                if (msgCount <= 0) break;
 
-                try
+                for (int i = 0; i < msgCount; i++)
                 {
-                    CommandBase command = CommandInternal.Instance.Deserialize(payload);
-                    NetworkReceiveEvent?.Invoke(new SteamConnection(connection), command);
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"Failed to deserialize Steam P2P message: {e}");
-                }
+                    SteamNetworkingMessage_t netMessage = (SteamNetworkingMessage_t)System.Runtime.InteropServices.Marshal.PtrToStructure(messages[i], typeof(SteamNetworkingMessage_t));
+                    byte[] payload = new byte[netMessage.m_cbSize];
+                    System.Runtime.InteropServices.Marshal.Copy(netMessage.m_pData, payload, 0, netMessage.m_cbSize);
 
-                SteamNetworkingMessage_t.Release(messages[i]);
+                    try
+                    {
+                        CommandBase command = CommandInternal.Instance.Deserialize(payload);
+                        NetworkReceiveEvent?.Invoke(new SteamConnection(connection), command);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to deserialize Steam P2P message: {e}");
+                    }
+
+                    SteamNetworkingMessage_t.Release(messages[i]);
+                }
             }
         }
 
         public void SendToAllClients(CommandBase message)
         {
-            byte[] data = CommandInternal.Instance.Serialize(message);
-            foreach (var client in _connectedClients)
+            try
             {
-                SendData(client, data);
+                byte[] data = CommandInternal.Instance.Serialize(message);
+                foreach (var client in _connectedClients)
+                {
+                    SendData(client, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("SteamworksTransport: Failed to SendToAllClients", ex);
             }
         }
 
         public void SendToClient(INetworkConnection peer, CommandBase message)
         {
-            if (peer.NativePeer is HSteamNetConnection connection)
+            try
             {
-                byte[] data = CommandInternal.Instance.Serialize(message);
-                SendData(connection, data);
+                if (peer.NativePeer is HSteamNetConnection connection)
+                {
+                    byte[] data = CommandInternal.Instance.Serialize(message);
+                    SendData(connection, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"SteamworksTransport: Failed to SendToClient {peer.Id}", ex);
             }
         }
 
         public void SendToServer(CommandBase message)
         {
-            if (_serverConnection.m_HSteamNetConnection != 0)
+            try
             {
-                byte[] data = CommandInternal.Instance.Serialize(message);
-                SendData(_serverConnection, data);
+                if (_serverConnection.m_HSteamNetConnection != 0)
+                {
+                    byte[] data = CommandInternal.Instance.Serialize(message);
+                    SendData(_serverConnection, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("SteamworksTransport: Failed to SendToServer", ex);
             }
         }
 
@@ -177,7 +218,17 @@ namespace CS2M.Networking.Transport
         {
             IntPtr buffer = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length);
             System.Runtime.InteropServices.Marshal.Copy(data, 0, buffer, data.Length);
-            SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
+            
+            EResult result = SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
+            if (result == EResult.k_EResultLimitExceeded)
+            {
+                Log.Warn($"Steam P2P send limit exceeded. Dropping packet or delaying.");
+            }
+            else if (result != EResult.k_EResultOK)
+            {
+                Log.Error($"Failed to send Steam P2P message: {result}");
+            }
+
             System.Runtime.InteropServices.Marshal.FreeHGlobal(buffer);
         }
 
@@ -202,6 +253,7 @@ namespace CS2M.Networking.Transport
                     break;
 
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected:
+                    Log.Debug($"SteamworksTransport: Connection established {connection.m_HSteamNetConnection}");
                     if (connection == _serverConnection)
                     {
                         ClientConnectSuccessfulEvent?.Invoke();
@@ -215,6 +267,7 @@ namespace CS2M.Networking.Transport
 
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer:
                 case ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally:
+                    Log.Warn($"SteamworksTransport: Connection closed or problem detected for {connection.m_HSteamNetConnection}. Info: {info.m_szEndDebug}");
                     SteamNetworkingSockets.CloseConnection(connection, 0, "Closed", false);
                     
                     if (connection == _serverConnection)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Colossal;
@@ -14,13 +14,14 @@ using CS2M.UI;
 using CS2M.Util;
 using LiteNetLib;
 using Unity.Entities;
+using CS2M.Networking.Transport;
 
 namespace CS2M.Networking
 {
     public class LocalPlayer : Player
     {
-        private SlicedPacketStream _packetStream;
-        private readonly SaveLoadHelper _saveLoadHelper;
+        private System.IO.MemoryStream _packetStream;
+        private SaveLoadHelper _saveLoadHelper;
         private NetworkManager _networkManager;
         private UISystem _uiSystem;
 
@@ -28,11 +29,11 @@ namespace CS2M.Networking
         {
             PlayerStatusChangedEvent += PlayerStatusChanged;
             PlayerTypeChangedEvent += PlayerTypeChanged;
-            _saveLoadHelper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SaveLoadHelper>();
         }
 
         public bool GetServerInfo(ConnectionConfig connectionConfig)
         {
+            Log.Trace($"LocalPlayer: GetServerInfo with HostAddress={connectionConfig.HostAddress}");
             if (PlayerStatus != PlayerStatus.INACTIVE)
             {
                 return false;
@@ -52,14 +53,17 @@ namespace CS2M.Networking
                 return false;
             }
 
+            PlayerType = PlayerType.CLIENT;
+            PlayerStatus = PlayerStatus.GET_SERVER_INFO;
+
             if (!_networkManager.SetupNatConnect())
             {
+                PlayerStatus = PlayerStatus.INACTIVE;
+                PlayerType = PlayerType.NONE;
                 _uiSystem.SetJoinErrors("CS2M.UI.JoinError.InvalidIP");
                 return false;
             }
 
-            PlayerType = PlayerType.CLIENT;
-            PlayerStatus = PlayerStatus.GET_SERVER_INFO;
             return true;
         }
 
@@ -196,10 +200,8 @@ namespace CS2M.Networking
                 return false;
             }
 
-            //TODO: Implement JoinRequest
-
             PlayerStatus = PlayerStatus.WAITING_TO_JOIN;
-            return DownloadingMap(); //TODO: Switch to 'return true;', when JoinRequest implemented
+            return true;
         }
 
         public bool DownloadingMap()
@@ -226,7 +228,7 @@ namespace CS2M.Networking
 
             if (cmd.NewTransfer)
             {
-                _packetStream = new SlicedPacketStream(cmd.WorldSlice.Length);
+                _packetStream = new System.IO.MemoryStream();
             }
             else if (_packetStream == null)
             {
@@ -236,7 +238,7 @@ namespace CS2M.Networking
                 return;
             }
 
-            _packetStream.AppendSlice(cmd.WorldSlice);
+            _packetStream.Write(cmd.WorldSlice, 0, cmd.WorldSlice.Length);
             _uiSystem.SetLoadProgress((int)_packetStream.Length, cmd.RemainingBytes);
 
             if (cmd.RemainingBytes == 0)
@@ -255,6 +257,11 @@ namespace CS2M.Networking
             PlayerStatus = PlayerStatus.LOADING_MAP;
             TaskManager.instance.EnqueueTask("LoadMap", async () =>
             {
+                if (_saveLoadHelper == null)
+                {
+                    _saveLoadHelper = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<SaveLoadHelper>();
+                }
+                
                 bool success = await _saveLoadHelper.LoadGame(_packetStream);
                 if (success)
                 {
@@ -273,6 +280,10 @@ namespace CS2M.Networking
             }
 
             PlayerStatus = PlayerStatus.PLAYING;
+            if (PlayerType == PlayerType.CLIENT)
+            {
+                SendToServer(new ClientJoinedCommand());
+            }
             return true;
         }
 
@@ -296,6 +307,7 @@ namespace CS2M.Networking
 
             PlayerStatus = PlayerStatus.PLAYING;
             PlayerType = PlayerType.SERVER;
+            PlayerId = 1;
 
             return true;
         }
@@ -307,6 +319,7 @@ namespace CS2M.Networking
         // PLAYING -> INACTIVE
         public bool Inactive()
         {
+            Log.Trace("LocalPlayer: Setting player to Inactive");
             // if (PlayerStatus != PlayerStatus.PLAYING)
             // {
             //     return false;
@@ -375,7 +388,7 @@ namespace CS2M.Networking
             }
         }
 
-        public void SendToClient(NetPeer peer, CommandBase message)
+        public void SendToClient(INetworkConnection peer, CommandBase message)
         {
             message.SenderId = PlayerId;
             _networkManager.SendToClient(peer, message);

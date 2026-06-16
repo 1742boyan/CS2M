@@ -1,37 +1,13 @@
-﻿using Colossal.Logging;
+using Colossal.Logging;
 using System;
-using LiteNetLib;
 
 namespace CS2M
 {
-    /// <summary>
-    ///     Implement the LiteNetLib logger interface to forward to our logger.
-    /// </summary>
-    public class NetLogWrapper : INetLogger
-    {
-        public void WriteNet(NetLogLevel level, string str, params object[] args)
-        {
-            switch (level)
-            {
-                case NetLogLevel.Info:
-                    Log.Logger.DebugFormat("Network info: " + str, args);
-                    break;
-                case NetLogLevel.Warning:
-                    Log.Logger.WarnFormat("Network warning: " + str, args);
-                    break;
-                case NetLogLevel.Error:
-                    Log.Logger.WarnFormat("Network error: " + str, args);
-                    break;
-                case NetLogLevel.Trace:
-                    // Ignore trace logging from LiteNetLib
-                    break;
-            }
-        }
-    }
-
     public static class Log
     {
-        public static ILog Logger { get; } = LogManager.GetLogger(Mod.Name)
+        public static Action<string> OnErrorUI;
+
+        public static ILog Logger { get; } = LogManager.GetLogger("CS2M")
             .SetShowsErrorsInUI(true)
             .SetEffectiveness(Level.Info)
             .SetLogStackTrace(false);
@@ -46,16 +22,19 @@ namespace CS2M
             Logger.SetLogStackTrace(true);
             Logger.Error(message);
             Logger.SetLogStackTrace(false);
+            OnErrorUI?.Invoke(message);
         }
 
         public static void Error(string message)
         {
             Logger.Error(message);
+            OnErrorUI?.Invoke(message);
         }
 
         public static void Error(string message, Exception ex)
         {
             Logger.Error(ex, message);
+            OnErrorUI?.Invoke($"{message}\n{ex.Message}");
         }
 
         public static void Warn(string message)

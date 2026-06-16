@@ -10,5 +10,10 @@ namespace CS2M.Networking.Transport
         /// Returns the underlying native connection object (e.g. NetPeer or HSteamNetConnection)
         /// </summary>
         object NativePeer { get; }
+        
+        /// <summary>
+        /// Returns the maximum size of a single reliable packet (MTU minus overhead)
+        /// </summary>
+        int GetMaxSinglePacketSize();
     }
 }
