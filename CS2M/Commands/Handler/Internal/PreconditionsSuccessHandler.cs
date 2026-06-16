@@ -1,4 +1,4 @@
-﻿using CS2M.API.Commands;
+using CS2M.API.Commands;
 using CS2M.Commands.Data.Internal;
 using CS2M.Networking;
 
@@ -13,6 +13,7 @@ namespace CS2M.Commands.Handler.Internal
 
         protected override void Handle(PreconditionsSuccessCommand command)
         {
+            NetworkInterface.Instance.LocalPlayer.PlayerId = command.AssignedPlayerId;
             NetworkInterface.Instance.LocalPlayer.WaitingToJoin();
         }
     }

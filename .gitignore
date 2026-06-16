@@ -10,6 +10,8 @@ assemblies/*.dll
 Releases/**
 Dumper/**
 
+PlayerLogs/**
+
 CS2M/Library
 *.sln.DotSettings.user
 *csproj.user

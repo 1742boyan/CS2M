@@ -46,10 +46,15 @@ namespace CS2M.Commands.Handler.Internal
 
             if (result.Errors == PreconditionsUtil.Errors.NONE)
             {
-                NetworkInterface.Instance.LocalPlayer.SendToClient(peer, new PreconditionsSuccessCommand());
+                NetworkInterface.Instance.LocalPlayer.SendToClient(peer, new PreconditionsSuccessCommand()
+                {
+                    AssignedPlayerId = (int)peer.Id
+                });
 
                 // Add the new player as a connected player
-                NetworkInterface.Instance.PlayerConnected(new RemotePlayer(peer, command.Username, PlayerType.CLIENT));
+                var remotePlayer = new RemotePlayer(peer, command.Username, PlayerType.CLIENT);
+                remotePlayer.PlayerId = (int)peer.Id;
+                NetworkInterface.Instance.PlayerConnected(remotePlayer);
             }
             else
             {

@@ -19,6 +19,11 @@ namespace CS2M.Commands.Handler.Internal
     {
         public static Dictionary<int, PlayerMouseState> PlayerMouseStates = new Dictionary<int, PlayerMouseState>();
 
+        public PlayerMouseHandler()
+        {
+            TransactionCmd = false;
+        }
+
         protected override void Handle(PlayerMouseCommand command)
         {
             if (!PlayerMouseStates.ContainsKey(command.PlayerId))
@@ -34,21 +39,28 @@ namespace CS2M.Commands.Handler.Internal
 
             if (state.HoveredEntity != newEntity)
             {
-                var em = World.DefaultGameObjectInjectionWorld.EntityManager;
-                
-                if (state.HoveredEntity != Entity.Null && em.Exists(state.HoveredEntity))
+                try
                 {
-                    em.RemoveComponent<Game.Tools.Highlighted>(state.HoveredEntity);
-                    em.AddComponentData(state.HoveredEntity, new Game.Common.BatchesUpdated());
-                }
+                    var em = World.DefaultGameObjectInjectionWorld.EntityManager;
+                    
+                    if (state.HoveredEntity != Entity.Null && em.Exists(state.HoveredEntity))
+                    {
+                        em.RemoveComponent<Game.Tools.Highlighted>(state.HoveredEntity);
+                        em.AddComponentData(state.HoveredEntity, new Game.Common.BatchesUpdated());
+                    }
 
-                state.PreviousHoveredEntity = state.HoveredEntity;
-                state.HoveredEntity = newEntity;
-                
-                if (newEntity != Entity.Null && em.Exists(newEntity))
+                    state.PreviousHoveredEntity = state.HoveredEntity;
+                    state.HoveredEntity = newEntity;
+                    
+                    if (newEntity != Entity.Null && em.Exists(newEntity))
+                    {
+                        em.AddComponentData(newEntity, new Game.Tools.Highlighted());
+                        em.AddComponentData(newEntity, new Game.Common.BatchesUpdated());
+                    }
+                }
+                catch (System.Exception)
                 {
-                    em.AddComponentData(newEntity, new Game.Tools.Highlighted());
-                    em.AddComponentData(newEntity, new Game.Common.BatchesUpdated());
+                    // Ignore ECS errors if entity index from remote doesn't map correctly locally
                 }
             }
 

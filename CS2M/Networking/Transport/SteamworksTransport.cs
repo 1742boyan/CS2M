@@ -139,25 +139,30 @@ namespace CS2M.Networking.Transport
 
         private void PollMessages(HSteamNetConnection connection)
         {
-            IntPtr[] messages = new IntPtr[16];
-            int msgCount = SteamNetworkingSockets.ReceiveMessagesOnConnection(connection, messages, messages.Length);
-            for (int i = 0; i < msgCount; i++)
+            IntPtr[] messages = new IntPtr[256];
+            while (true)
             {
-                SteamNetworkingMessage_t netMessage = (SteamNetworkingMessage_t)System.Runtime.InteropServices.Marshal.PtrToStructure(messages[i], typeof(SteamNetworkingMessage_t));
-                byte[] payload = new byte[netMessage.m_cbSize];
-                System.Runtime.InteropServices.Marshal.Copy(netMessage.m_pData, payload, 0, netMessage.m_cbSize);
+                int msgCount = SteamNetworkingSockets.ReceiveMessagesOnConnection(connection, messages, messages.Length);
+                if (msgCount <= 0) break;
 
-                try
+                for (int i = 0; i < msgCount; i++)
                 {
-                    CommandBase command = CommandInternal.Instance.Deserialize(payload);
-                    NetworkReceiveEvent?.Invoke(new SteamConnection(connection), command);
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"Failed to deserialize Steam P2P message: {e}");
-                }
+                    SteamNetworkingMessage_t netMessage = (SteamNetworkingMessage_t)System.Runtime.InteropServices.Marshal.PtrToStructure(messages[i], typeof(SteamNetworkingMessage_t));
+                    byte[] payload = new byte[netMessage.m_cbSize];
+                    System.Runtime.InteropServices.Marshal.Copy(netMessage.m_pData, payload, 0, netMessage.m_cbSize);
 
-                SteamNetworkingMessage_t.Release(messages[i]);
+                    try
+                    {
+                        CommandBase command = CommandInternal.Instance.Deserialize(payload);
+                        NetworkReceiveEvent?.Invoke(new SteamConnection(connection), command);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Failed to deserialize Steam P2P message: {e}");
+                    }
+
+                    SteamNetworkingMessage_t.Release(messages[i]);
+                }
             }
         }
 
@@ -214,20 +219,15 @@ namespace CS2M.Networking.Transport
             IntPtr buffer = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length);
             System.Runtime.InteropServices.Marshal.Copy(data, 0, buffer, data.Length);
             
-            EResult result;
-            do
+            EResult result = SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
+            if (result == EResult.k_EResultLimitExceeded)
             {
-                result = SteamNetworkingSockets.SendMessageToConnection(connection, buffer, (uint)data.Length, Constants.k_nSteamNetworkingSend_Reliable, out _);
-                if (result == EResult.k_EResultLimitExceeded)
-                {
-                    System.Threading.Thread.Sleep(1);
-                }
-                else if (result != EResult.k_EResultOK)
-                {
-                    Log.Error($"Failed to send Steam P2P message: {result}");
-                    break;
-                }
-            } while (result == EResult.k_EResultLimitExceeded);
+                Log.Warn($"Steam P2P send limit exceeded. Dropping packet or delaying.");
+            }
+            else if (result != EResult.k_EResultOK)
+            {
+                Log.Error($"Failed to send Steam P2P message: {result}");
+            }
 
             System.Runtime.InteropServices.Marshal.FreeHGlobal(buffer);
         }

@@ -57,6 +57,8 @@ namespace CS2M
                 Settings.OnSetLoggingLevel(Settings.LoggingLevel);
                 Log.Info("Configured and initialised mod settings");
 
+                NetworkInterface.Instance.AutoApproveJoins = Settings.AutoApproveJoins;
+
                 CommandInternal.Instance = new CommandInternal();
                 ApiCommand.Instance = new ApiCommand();
 

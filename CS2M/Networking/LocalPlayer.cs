@@ -307,6 +307,7 @@ namespace CS2M.Networking
 
             PlayerStatus = PlayerStatus.PLAYING;
             PlayerType = PlayerType.SERVER;
+            PlayerId = 1;
 
             return true;
         }

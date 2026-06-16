@@ -267,6 +267,12 @@ namespace CS2M.Networking
                     CommandInternal.Instance.SendToClient(player, cmd);
 
                     newTransfer = false;
+
+                    // Throttle to avoid flooding the Steam buffer and blocking the main thread
+                    if (i > 0 && (i / maxPacketSize) % 5 == 0)
+                    {
+                        await System.Threading.Tasks.Task.Delay(1);
+                    }
                 }
 
                 Log.Debug($"[SaveGame] Save game packaging took {watch.ElapsedMilliseconds}ms");

@@ -105,6 +105,19 @@ namespace CS2M.Networking
                 return;
             }
 
+            if (command is ClientJoinedCommand clientJoinedCommand)
+            {
+                try
+                {
+                    ((ClientJoinedHandler)handler).HandleOnServer(clientJoinedCommand, peer);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"NetworkManager: Error handling ClientJoinedCommand", ex);
+                }
+                return;
+            }
+
             if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER)
             {
                 bool isConnected = NetworkInterface.Instance.IsPeerConnected(peer);
@@ -117,6 +130,17 @@ namespace CS2M.Networking
             try
             {
                 handler.Parse(command);
+
+                if (NetworkInterface.Instance.LocalPlayer.PlayerType == PlayerType.SERVER && handler.RelayOnServer)
+                {
+                    foreach (var p in NetworkInterface.Instance.PlayerListConnected)
+                    {
+                        if (p is RemotePlayer remotePlayer && remotePlayer.Connection.Id != peer.Id)
+                        {
+                            CommandInternal.Instance.SendToClient(remotePlayer, command);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
